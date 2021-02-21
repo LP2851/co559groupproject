@@ -1,12 +1,18 @@
+import ui.LoginGUI;
+
+import javax.swing.*;
+
 /**
  * The main class for start-up from the command line.
  * @author Lucas
- * @version 0.1
+ * @version 0.1.1
  */
 
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
+        //JFrame frame = LoginGUI.createLoginGUI();
+        JFrame frame = new LoginGUI();
     }
+
 }
