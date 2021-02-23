@@ -51,6 +51,7 @@ public class GUI extends JFrame {
                     GlobalUIVars.debug("Username and password are correct");
 
                     setActivePanel(welcomePanel);
+
                     // TODO Get user's name from username and password
                     activeUsersName = "Tester McTesterson";
                     welcomeScreenNameLabel.setText(activeUsersName);
@@ -113,12 +114,12 @@ public class GUI extends JFrame {
      * Sets the frame to display the login panel.
      */
     private void initFrame() {
-        setTitle(GlobalUIVars.APP_NAME);
-        setContentPane(loginPanel);
-        loginPanel.setVisible(true);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(GlobalUIVars.WINDOW_X, GlobalUIVars.WINDOW_Y);
-        setVisible(true);
+        setTitle(GlobalUIVars.APP_NAME); // setting title of window
+        setContentPane(loginPanel); // setting content of window to be the login screen
+        loginPanel.setVisible(true); // definitely necessary
+        setDefaultCloseOperation(EXIT_ON_CLOSE); // setting close operation
+        setSize(GlobalUIVars.WINDOW_X, GlobalUIVars.WINDOW_Y); // setting frame size
+        setVisible(true); // frame is visible
     }
 
     /**
@@ -126,12 +127,7 @@ public class GUI extends JFrame {
      * @param panel The panel to be displayed.
      */
     private void setActivePanel(JPanel panel) {
-        //setTitle(GlobalUIVars.APP_NAME);
-        setContentPane(panel);
-        //panel.setVisible(true);
-        //setDefaultCloseOperation(EXIT_ON_CLOSE);
-        //setSize(GlobalUIVars.WINDOW_X, GlobalUIVars.WINDOW_Y);
-        //setVisible(true);
-        revalidate();
+        setContentPane(panel); // changing the panel to the provided panel
+        revalidate(); // redraws window
     }
 }
