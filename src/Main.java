@@ -1,4 +1,4 @@
-import ui.LoginGUI;
+import ui.GUI;
 
 import javax.swing.*;
 
@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         //JFrame frame = LoginGUI.createLoginGUI();
-        JFrame frame = new LoginGUI();
+        JFrame frame = new GUI(); // new LoginGUI();
     }
 
 }

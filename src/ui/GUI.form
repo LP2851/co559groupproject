@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ui.GUI">
+  <grid id="27dc6" binding="framePanel" layout-manager="CardLayout" hgap="0" vgap="0" show="58279">
+    <constraints>
+      <xy x="20" y="20" width="1403" height="460"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="58279" binding="loginPanel" layout-manager="GridBagLayout">
+        <constraints>
+          <card name="loginCard"/>
+        </constraints>
+        <properties>
+          <visible value="false"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="7da75" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font size="28" style="1"/>
+              <text value="Enter Login Details"/>
+            </properties>
+          </component>
+          <hspacer id="80574">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+          </hspacer>
+          <vspacer id="7d428">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+          </vspacer>
+          <component id="38f5" class="javax.swing.JTextField" binding="usernameTextField">
+            <constraints>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <enabled value="true"/>
+              <toolTipText value="Enter Username Here"/>
+            </properties>
+          </component>
+          <component id="df469" class="javax.swing.JPasswordField" binding="passwordField1" default-binding="true">
+            <constraints>
+              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <toolTipText value="Enter Password Here"/>
+            </properties>
+          </component>
+          <component id="b448e" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font size="18" style="1"/>
+              <text value="Username: "/>
+            </properties>
+          </component>
+          <component id="8ebc5" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font size="18" style="1"/>
+              <text value="Password: "/>
+            </properties>
+          </component>
+          <component id="74e87" class="javax.swing.JLabel" binding="errorLabel">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <enabled value="true"/>
+              <font style="3"/>
+              <foreground color="-65536"/>
+              <text value="Error: Invalid Username or Password"/>
+              <visible value="false"/>
+            </properties>
+          </component>
+          <component id="eeace" class="javax.swing.JButton" binding="loginButton" default-binding="true">
+            <constraints>
+              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font style="1"/>
+              <text value="Login"/>
+              <toolTipText value="Login"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="22077" binding="welcomePanel" layout-manager="GridBagLayout">
+        <constraints>
+          <card name="Card1"/>
+        </constraints>
+        <properties>
+          <enabled value="true"/>
+          <visible value="true"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <hspacer id="5a9b4">
+            <constraints>
+              <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+          </hspacer>
+          <vspacer id="7776c">
+            <constraints>
+              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+          </vspacer>
+          <component id="9a077" class="javax.swing.JButton" binding="bookingsButton" default-binding="true">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0" ipady="100"/>
+            </constraints>
+            <properties>
+              <maximumSize width="120" height="30"/>
+              <minimumSize width="120" height="30"/>
+              <preferredSize width="120" height="30"/>
+              <text value="Bookings"/>
+              <toolTipText value="View, Add, Remove or Reschedule Bookings"/>
+            </properties>
+          </component>
+          <component id="9a1cd" class="javax.swing.JButton" binding="patientDetailsButton" default-binding="true">
+            <constraints>
+              <grid row="3" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0" ipady="100"/>
+            </constraints>
+            <properties>
+              <maximumSize width="120" height="30"/>
+              <minimumSize width="120" height="30"/>
+              <preferredSize width="120" height="30"/>
+              <text value="Patient Details"/>
+              <toolTipText value="View and Change Patient Details"/>
+            </properties>
+          </component>
+          <component id="291ce" class="javax.swing.JButton" binding="addNewDoctorButton" default-binding="true">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0" ipady="100"/>
+            </constraints>
+            <properties>
+              <maximumSize width="120" height="30"/>
+              <minimumSize width="120" height="30"/>
+              <preferredSize width="120" height="30"/>
+              <text value="Add New Doctor"/>
+              <toolTipText value="Enter a new doctor into the system"/>
+            </properties>
+          </component>
+          <component id="dbac0" class="javax.swing.JButton" binding="addNewPatientButton" default-binding="true">
+            <constraints>
+              <grid row="5" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0" ipady="100"/>
+            </constraints>
+            <properties>
+              <maximumSize width="120" height="30"/>
+              <minimumSize width="120" height="30"/>
+              <preferredSize width="120" height="30"/>
+              <text value="Add New Patient"/>
+              <toolTipText value="Enter a new patient into the system"/>
+            </properties>
+          </component>
+          <hspacer id="d8666">
+            <constraints>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0" ipadx="50"/>
+            </constraints>
+          </hspacer>
+          <component id="8dcad" class="javax.swing.JButton" binding="logoutButton">
+            <constraints>
+              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0" ipady="20"/>
+            </constraints>
+            <properties>
+              <text value="Logout"/>
+              <toolTipText value="Logout of account"/>
+            </properties>
+          </component>
+          <vspacer id="a6dca">
+            <constraints>
+              <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+          </vspacer>
+          <component id="151bf" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font size="28"/>
+              <text value="Welcome, "/>
+            </properties>
+          </component>
+          <component id="4f7cd" class="javax.swing.JLabel" binding="welcomeScreenNameLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font size="14" style="3"/>
+              <text value="Person Name"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
