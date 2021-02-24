@@ -1,7 +1,6 @@
 import mysql.AccessMySQL;
 import ui.GUI;
-
-import javax.swing.*;
+import ui.GlobalUIVars;
 
 /**
  * The main class for start-up from the command line.
@@ -10,15 +9,16 @@ import javax.swing.*;
  */
 public class Main {
 
+
     /**
      * Runs when program starts.
      * @param args
      */
     public static void main(String[] args) {
-
-        JFrame frame = new GUI();
+        new GUI();
         AccessMySQL db = new AccessMySQL();
-        db.testConnection();
+        if (GlobalUIVars.DEBUG) db.testConnection();
+        //System.out.println(db.checkUsernamePassword("test", "123"));
     }
 
 }

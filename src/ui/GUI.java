@@ -1,5 +1,7 @@
 package ui;
 
+import mysql.AccessMySQL;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,8 +25,9 @@ public class GUI extends JFrame {
     private JButton addNewPatientButton;
     private JButton logoutButton;
     private JLabel welcomeScreenNameLabel;
-
     private String activeUsersName;
+
+    private AccessMySQL accessMySQL = new AccessMySQL();
 
     /**
      * Constructor for the GUI class. Sets up frame for login screen.
@@ -39,29 +42,23 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 GlobalUIVars.debug("Button Pressed");
 
-                String username = usernameTextField.getText();
-                String password = passwordField1.getText();
+                String username = usernameTextField.getText().strip();
+                String password = passwordField1.getText().strip();
 
-                // here check to see if username and hashed password in db
-                // TODO Check to see if username and password in database
-                if (username.contains("test") && password.contains("test")) {
+                // TODO Password hashing?
+                activeUsersName = accessMySQL.checkUsernamePassword(username, password);
+                if (!activeUsersName.equals("")) { // username/password exists
                     usernameTextField.setText(null);
                     passwordField1.setText(null);
 
                     GlobalUIVars.debug("Username and password are correct");
 
                     setActivePanel(welcomePanel);
-
-                    // TODO Get user's name from username and password
-                    activeUsersName = "Tester McTesterson";
                     welcomeScreenNameLabel.setText(activeUsersName);
-                }
-
-                else {
+                } else {
                     errorLabel.setVisible(true);
                     GlobalUIVars.debug("Username and password are incorrect.");
                     passwordField1.setText(null);
-
                 }
             }
         });
@@ -72,6 +69,7 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 GlobalUIVars.debug("Logging out from the account of: " + welcomeScreenNameLabel.getText());
                 setActivePanel(loginPanel);
+                activeUsersName = "";
 
             }
         });
