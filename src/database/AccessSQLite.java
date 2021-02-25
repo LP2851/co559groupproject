@@ -1,9 +1,6 @@
 package database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 /**
  *
@@ -35,6 +32,7 @@ public class AccessSQLite {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection(connectionURL);
             System.out.println("IT WORKS");
+            connection.close();
         } catch (Exception e) {
             System.out.println("IT BROKE");
         }
@@ -63,6 +61,9 @@ public class AccessSQLite {
             preparedStatement.setString(2, password);
 
             resultSet = preparedStatement.executeQuery();
+
+            connection.close();
+
             if(resultSet.next()) {
                 return resultSet.getString("fname") + " " + resultSet.getString("sname");
             }
@@ -91,6 +92,8 @@ public class AccessSQLite {
             preparedStatement.setString(4, background);
 
             preparedStatement.executeUpdate();
+
+            connection.close();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,7 +145,18 @@ public class AccessSQLite {
     /**
      * TODO Some form of log that can be checked.
      */
-    private void logAccess() {}
+    private void logAccess(String username) {}
+
+    public ResultSet getUserMessages(String username) throws SQLException, SQLTimeoutException {
+        connection = DriverManager.getConnection(connectionURL);
+        preparedStatement = connection.prepareStatement("select m.message" +
+                                                            "from messages m, administrator a" +
+                                                            "where m.aid = a.aid and a.username = ? ;");
+        preparedStatement.setString(1, username);
+        resultSet = preparedStatement.executeQuery();
+        connection.close();
+        return resultSet;
+    }
 
 
     /**
@@ -152,5 +166,6 @@ public class AccessSQLite {
     public ResultSet getResultSet() {
         return resultSet;
     }
+
 
 }

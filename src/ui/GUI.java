@@ -25,11 +25,22 @@ public class GUI extends JFrame {
     private JButton addNewPatientButton;
     private JButton logoutButton;
     private JLabel welcomeScreenNameLabel;
+    private JPanel messagePanel;
+    private JPanel enterNewDocPanel;
+    private JButton goBackButton;
     private JPanel newDoctorPanel;
     private JButton backToMainMenuButton;
     private JButton enterNewDoctorButton;
+    private JTextField doctorFNameField;
+    private JTextField doctorSNameField;
+    private JTextField doctorPhoneField;
+    private JTextField doctorBackgroundField;
+    private JButton messageBackButton;
+    private JTable table1;
     private JButton messagesButton;
+
     private String activeUsersName;
+    private String usersUsername;
 
     private AccessSQLite accessSQLite = new AccessSQLite();
 
@@ -56,6 +67,7 @@ public class GUI extends JFrame {
                     passwordField1.setText(null);
 
                     GlobalUIVars.debug("Username and password are correct");
+                    usersUsername = username;
 
                     setActivePanel(welcomePanel);
                     welcomeScreenNameLabel.setText(activeUsersName);
@@ -74,6 +86,7 @@ public class GUI extends JFrame {
                 GlobalUIVars.debug("Logging out from the account of: " + welcomeScreenNameLabel.getText());
                 setActivePanel(loginPanel);
                 activeUsersName = "";
+                usersUsername = "";
 
             }
         });
@@ -98,7 +111,11 @@ public class GUI extends JFrame {
         addNewDoctorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 GlobalUIVars.debug("Opening new doctor page");
+
+                setActivePanel(enterNewDocPanel);
+
             }
         });
 
@@ -107,6 +124,29 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 GlobalUIVars.debug("Opening new patient page");
+            }
+        });
+
+        // Enter Doctor Page- Go Back Button
+        goBackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GlobalUIVars.debug("Returning to Welcome Page");
+
+                doctorFNameField.setText(null);
+                doctorSNameField.setText(null);
+                doctorPhoneField.setText(null);
+                doctorBackgroundField.setText(null);
+
+                setActivePanel(welcomePanel);
+            }
+        });
+
+        // Enter Doctor Page- Submit New Doctor Button
+        enterNewDoctorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GlobalUIVars.debug("Attempting to submit doctor data");
             }
         });
     }
@@ -130,6 +170,11 @@ public class GUI extends JFrame {
      */
     private void setActivePanel(JPanel panel) {
         setContentPane(panel); // changing the panel to the provided panel
+        panel.setVisible(true);
         revalidate(); // redraws window
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 }

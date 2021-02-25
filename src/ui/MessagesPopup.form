@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ui.MessagesPopup">
+  <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="CardLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="34248" binding="messagePanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints>
+          <card name="Card1"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <scrollpane id="77a1a" binding="scrollPane">
+            <constraints border-constraint="Center"/>
+            <properties/>
+            <border type="none"/>
+            <children/>
+          </scrollpane>
+          <component id="a7f42" class="javax.swing.JLabel">
+            <constraints border-constraint="North"/>
+            <properties>
+              <font size="28" style="1"/>
+              <text value="Your Messages"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="43979" binding="noMessagePanel" layout-manager="CardLayout" hgap="0" vgap="0">
+        <constraints>
+          <card name="Card2"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="485eb" class="javax.swing.JLabel">
+            <constraints>
+              <card name="Card1"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="0"/>
+              <text value="You have no messages"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
