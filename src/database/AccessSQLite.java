@@ -17,6 +17,10 @@ public class AccessSQLite {
     // URL used to connect to the database file.
     private static String connectionURL = "jdbc:sqlite:co559.db";
 
+    // SQL Statements
+    public static final String NEW_DOCTOR = "insert into doctor (fname, sname, phone, background) values (?, ?, ?, ?) ;";
+    public static final String CHECK_USERNAME_PASSWORD = "select fname, sname from administrator where username = ? and password = ?;";
+
     /**
      * Empty constructor for the AccessMySQL class
      */
@@ -50,12 +54,10 @@ public class AccessSQLite {
      * @return The name of the user. (FirstName Surname), or empty string if user not found.
      */
     public String checkUsernamePassword(String username, String password) {
-        String sqlCommand = "select fname, sname from administrator where username = ? and password = ?;";
-
         // PreparedStatement - prevents sql injection
         try {
             connection = DriverManager.getConnection(connectionURL);
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+            preparedStatement = connection.prepareStatement(CHECK_USERNAME_PASSWORD);
 
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
@@ -72,10 +74,27 @@ public class AccessSQLite {
     }
 
     /**
-     * TODO Generate and run add doctor command ( INSERT INTO (...) VALUES (...); )
+     * Adds a new doctor to the database
+     * @param fname First name of the doctor
+     * @param sname Surname of the doctor
+     * @param phone Phone number (string) of the doctor
+     * @param background Background details of the doctor
      */
-    public void addDoctor() {
+    public void addDoctor(String fname, String sname, String phone, String background) {
+        try {
+            connection = DriverManager.getConnection(connectionURL);
+            preparedStatement = connection.prepareStatement(NEW_DOCTOR);
 
+            preparedStatement.setString(1, fname);
+            preparedStatement.setString(2, sname);
+            preparedStatement.setString(3, phone);
+            preparedStatement.setString(4, background);
+
+            preparedStatement.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

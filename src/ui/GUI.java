@@ -25,6 +25,10 @@ public class GUI extends JFrame {
     private JButton addNewPatientButton;
     private JButton logoutButton;
     private JLabel welcomeScreenNameLabel;
+    private JPanel newDoctorPanel;
+    private JButton backToMainMenuButton;
+    private JButton enterNewDoctorButton;
+    private JButton messagesButton;
     private String activeUsersName;
 
     private AccessSQLite accessSQLite = new AccessSQLite();
