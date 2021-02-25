@@ -1,6 +1,5 @@
-import mysql.AccessMySQL;
+import database.AccessSQLite;
 import ui.GUI;
-import ui.GlobalUIVars;
 
 /**
  * The main class for start-up from the command line.
@@ -16,9 +15,12 @@ public class Main {
      */
     public static void main(String[] args) {
         new GUI();
-        AccessMySQL db = new AccessMySQL();
-        if (GlobalUIVars.DEBUG) db.testConnection();
+        // AccessMySQL db = new AccessMySQL();
+        // if (GlobalUIVars.DEBUG) db.testConnection();
         //System.out.println(db.checkUsernamePassword("test", "123"));
+        AccessSQLite sqlite = new AccessSQLite();
+        sqlite.testConnection();
+
     }
 
 }

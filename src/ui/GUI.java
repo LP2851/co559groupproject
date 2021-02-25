@@ -1,6 +1,6 @@
 package ui;
 
-import mysql.AccessMySQL;
+import database.AccessSQLite;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -27,7 +27,7 @@ public class GUI extends JFrame {
     private JLabel welcomeScreenNameLabel;
     private String activeUsersName;
 
-    private AccessMySQL accessMySQL = new AccessMySQL();
+    private AccessSQLite accessSQLite = new AccessSQLite();
 
     /**
      * Constructor for the GUI class. Sets up frame for login screen.
@@ -46,7 +46,7 @@ public class GUI extends JFrame {
                 String password = passwordField1.getText().strip();
 
                 // TODO Password hashing?
-                activeUsersName = accessMySQL.checkUsernamePassword(username, password);
+                activeUsersName = accessSQLite.checkUsernamePassword(username, password);
                 if (!activeUsersName.equals("")) { // username/password exists
                     usernameTextField.setText(null);
                     passwordField1.setText(null);
