@@ -25,7 +25,6 @@ public class GUI extends JFrame {
     private JButton addNewPatientButton;
     private JButton logoutButton;
     private JLabel welcomeScreenNameLabel;
-    private JPanel messagePanel;
     private JPanel enterNewDocPanel;
     private JButton goBackButton;
     private JPanel newDoctorPanel;
@@ -35,8 +34,6 @@ public class GUI extends JFrame {
     private JTextField doctorSNameField;
     private JTextField doctorPhoneField;
     private JTextField doctorBackgroundField;
-    private JButton messageBackButton;
-    private JTable table1;
     private JButton messagesButton;
 
     private String activeUsersName;
