@@ -18,7 +18,12 @@
             <constraints border-constraint="Center"/>
             <properties/>
             <border type="none"/>
-            <children/>
+            <children>
+              <component id="1a602" class="javax.swing.JTable" binding="table1" default-binding="true">
+                <constraints/>
+                <properties/>
+              </component>
+            </children>
           </scrollpane>
           <component id="a7f42" class="javax.swing.JLabel">
             <constraints border-constraint="North"/>

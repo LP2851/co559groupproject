@@ -18,7 +18,6 @@ public class Main {
         if (GlobalUIVars.DEBUG) {
             AccessSQLite sqlite = new AccessSQLite();
             sqlite.testConnection();
-            //sqlite.addDoctor("DocName", "DocSurname", "01234567890", "");
         }
 
     }

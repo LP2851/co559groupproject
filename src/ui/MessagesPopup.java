@@ -13,6 +13,7 @@ public class MessagesPopup extends JFrame {
     private JScrollPane scrollPane;
     private JPanel noMessagePanel;
     private JPanel messagePanel;
+    private JTable table1;
 
     private AccessSQLite accessSQLite;
     private String username;
@@ -21,13 +22,9 @@ public class MessagesPopup extends JFrame {
 
     public MessagesPopup(String username) {
         this.username = username;
-        initFrame();
+        //showMessages();
 
         // Get Data ResultSet
-    }
-
-    private void initFrame() {
-
     }
 
     private ArrayList<String> getMessages() {
@@ -48,19 +45,10 @@ public class MessagesPopup extends JFrame {
         ArrayList<String> messages = getMessages();
 
         if (messages.size() > 0) {
-            setNoMessages();
+            initFrame(noMessagePanel);
         } else {
             setMessages(messages);
         }
-    }
-
-    private void setNoMessages() {
-        setTitle("Messages"); // setting title of window
-        setContentPane(noMessagePanel); // setting content of window to be the login screen
-        noMessagePanel.setVisible(true); // definitely necessary
-        setDefaultCloseOperation(EXIT_ON_CLOSE); // setting close operation
-        setSize(GlobalUIVars.WINDOW_X, GlobalUIVars.WINDOW_Y); // setting frame size
-        setVisible(true); // frame is visible
     }
 
     /**
@@ -68,15 +56,25 @@ public class MessagesPopup extends JFrame {
      * @param messages
      */
     private void setMessages(ArrayList<String> messages) {
-        JTable table = new JTable();
-        DefaultTableModel model = new DefaultTableModel();
+
+        DefaultTableModel model = (DefaultTableModel) table1.getModel();//new DefaultTableModel();
         model.addColumn("Messages");
+        Object[] row = new Object[1];
         for (int i = 0; i < messages.size(); i++) {
-            model.addRow(new Object[] {messages.get(i)});
+            row[0] = messages.get(i);
+            model.addRow(row);
         }
+        scrollPane.setVisible(true);
+        initFrame(messagePanel);
 
+    }
 
-        table.setModel(model);
-
+    private void initFrame(JPanel panel) {
+        setTitle("Messages"); // setting title of window
+        setContentPane(panel); // setting content of window to be the login screen
+        panel.setVisible(true); // definitely necessary
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE); // setting close operation
+        setSize(300, 400); // setting frame size
+        setVisible(true); // frame is visible
     }
 }

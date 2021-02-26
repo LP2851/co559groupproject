@@ -27,19 +27,18 @@ public class GUI extends JFrame {
     private JLabel welcomeScreenNameLabel;
     private JPanel enterNewDocPanel;
     private JButton goBackButton;
-    private JPanel newDoctorPanel;
-    private JButton backToMainMenuButton;
     private JButton enterNewDoctorButton;
     private JTextField doctorFNameField;
     private JTextField doctorSNameField;
     private JTextField doctorPhoneField;
     private JTextField doctorBackgroundField;
-    private JButton messagesButton;
 
     private String activeUsersName;
     private String usersUsername;
 
     private AccessSQLite accessSQLite = new AccessSQLite();
+
+    private MessagesPopup messagesPopup;
 
     /**
      * Constructor for the GUI class. Sets up frame for login screen.
@@ -68,6 +67,8 @@ public class GUI extends JFrame {
 
                     setActivePanel(welcomePanel);
                     welcomeScreenNameLabel.setText(activeUsersName);
+
+                    messagesPopup = new MessagesPopup(username);
                 } else {
                     errorLabel.setVisible(true);
                     GlobalUIVars.debug("Username and password are incorrect.");
@@ -84,6 +85,7 @@ public class GUI extends JFrame {
                 setActivePanel(loginPanel);
                 activeUsersName = "";
                 usersUsername = "";
+                messagesPopup.dispose();
 
             }
         });
