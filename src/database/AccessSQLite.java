@@ -80,7 +80,7 @@ public class AccessSQLite {
      * @param phone Phone number (string) of the doctor
      * @param background Background details of the doctor
      */
-    public void addDoctor(String fname, String sname, String phone, String background) {
+    public boolean addDoctor(String fname, String sname, String phone, String background) {
         try {
             connection = DriverManager.getConnection(connectionURL);
             preparedStatement = connection.prepareStatement(NEW_DOCTOR);
@@ -91,11 +91,12 @@ public class AccessSQLite {
             preparedStatement.setString(4, background);
 
             preparedStatement.executeUpdate();
-
+            return true;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     /**

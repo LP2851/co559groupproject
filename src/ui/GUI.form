@@ -14,7 +14,7 @@
           <card name="loginCard"/>
         </constraints>
         <properties>
-          <visible value="true"/>
+          <visible value="false"/>
         </properties>
         <border type="none"/>
         <children>

@@ -146,8 +146,54 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 GlobalUIVars.debug("Attempting to submit doctor data");
+
+                // Check to see if the doctor has been given a first name and surname otherwise error
+                if (doctorFNameField.getText().strip().isEmpty() || doctorSNameField.getText().strip().isEmpty()) {
+                    new DialogBox("Name Error",
+                            "The doctor must have a name and a surname.",
+                            DialogBox.MessageType.ERROR);
+                // Check to see if the number is valid or not inputted otherwise error
+                } else if (!validatePhoneNumber(doctorPhoneField.getText().strip())) {
+                    new DialogBox("Phone Number Error",
+                            "The phone number you have inputted is invalid.\nPhone numbers must be 11 characters in length and only contain numeric characters.",
+                            DialogBox.MessageType.ERROR);
+                // Succeeded input tests
+                } else {
+                    // Getting inputted data values
+                    String fname, sname, phone, background;
+                    fname = doctorFNameField.getText().strip();
+                    sname = doctorSNameField.getText().strip();
+                    phone = doctorPhoneField.getText().strip();
+                    background = doctorBackgroundField.getText().strip();
+
+                    if (accessSQLite.addDoctor(fname, sname, phone, background)) {
+                        GlobalUIVars.debug("Returning to Welcome Page");
+
+                        // Dialog box telling you that the doctor has successfully been added
+                        new DialogBox("New Doctor Has Been Added to the Database:\n" +
+                                        "Name: " + fname + " " + sname + "\n" +
+                                        "Phone Number: " + phone + "\n" +
+                                        "Background: " + background);
+
+                        // Resetting field on panel
+                        doctorFNameField.setText(null);
+                        doctorSNameField.setText(null);
+                        doctorPhoneField.setText(null);
+                        doctorBackgroundField.setText(null);
+
+                        // Change back to welcome screen
+                        setActivePanel(welcomePanel);
+
+                    } else {
+                        // Show error message if something goes wrong when adding new doctor to the database
+                        new DialogBox("Database Error", "An unknown database error occurred.\nPlease try again.", DialogBox.MessageType.ERROR);
+                    }
+
+
+                }
             }
         });
+
     }
 
     /**
@@ -173,7 +219,28 @@ public class GUI extends JFrame {
         revalidate(); // redraws window
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
+    /**
+     * Checks to see an inputted phone number is valid.
+     * @param phoneNo String containing user input for phone number
+     * @return true if number is valid, otherwise false.
+     */
+    private boolean validatePhoneNumber(String phoneNo) {
+        // Checks characters in phone number are numeric
+        try {
+            for (char c : phoneNo.toCharArray()) {
+                Integer.parseInt("" + c);
+            }
+        } catch (NumberFormatException e) {
+            // Number not valid (contains non-numeric characters)
+            return false;
+        }
+
+        // If numeric and length of number is 11 characters then number is valid
+        if(phoneNo.length() == 11) return true;
+        // If number is empty (this is allowed) then number is valid
+        else if(phoneNo.isEmpty()) return true;
+        // Wrong length then invalid number
+        else return false;
     }
+
 }
