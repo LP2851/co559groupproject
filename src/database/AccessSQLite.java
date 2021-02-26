@@ -145,14 +145,22 @@ public class AccessSQLite {
      */
     private void logAccess(String username) {}
 
-    public ResultSet getUserMessages(String username) throws SQLException, SQLTimeoutException {
+    /**
+     * Returns the results from asking the database for all of the messages for the user.
+     * @param username The user's username- to make they only get messages for them
+     * @return The results from asking the database for all of the messages for the user.
+     * @throws SQLException Can happen when the query is executed.
+     */
+    public ResultSet getUserMessages(String username) throws SQLException {
         connection = DriverManager.getConnection(connectionURL);
-        preparedStatement = connection.prepareStatement("select m.message" +
-                                                            "from messages m, administrator a" +
-                                                            "where m.aid = a.aid and a.username = ? ;");
-        preparedStatement.setString(1, username);
-        resultSet = preparedStatement.executeQuery();
 
+        // Cannot use prepared statement here as broke some of the syntax
+        Statement statement = connection.createStatement();
+        resultSet  = statement.executeQuery("select m.message " + // getting the messages
+                                                "from messages m, administrator a " + // using these tables
+                                                "where m.aid = a.aid " + // this is a join one aids
+                                                "and a.username = '" + username + "' " + // getting messages for the user
+                                                "order by mid desc;" ); // the values at the top are newest
         return resultSet;
     }
 
