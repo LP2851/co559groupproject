@@ -4,7 +4,6 @@ import database.AccessSQLite;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 
 /**
@@ -36,7 +35,6 @@ public class MessagesPopup extends JFrame {
      */
     public MessagesPopup(String username) {
         this.username = username;
-        // Creating the frame.
         showMessages();
     }
 
@@ -45,21 +43,7 @@ public class MessagesPopup extends JFrame {
      * @return The user's messages from the database
      */
     private ArrayList<String> getMessages() {
-        // Creating an empty ArrayList
-        ArrayList<String> messages = new ArrayList<>();
-        try {
-            // Attempting to get the messages from the database
-            ResultSet rs = accessSQLite.getUserMessages(username);
-
-            // Adding messages to the list.
-            while(rs.next()) {
-                messages.add(rs.getString("message"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            // ArrayList will be empty
-        }
-        return messages;
+        return accessSQLite.getUserMessages(username);
     }
 
     /**

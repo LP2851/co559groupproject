@@ -1,13 +1,13 @@
 package database;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  *
  */
 public class AccessSQLite {
     // Variables used for database access
-    private Connection connection = null;
     private ResultSet resultSet = null;
     private PreparedStatement preparedStatement = null;
 
@@ -30,11 +30,13 @@ public class AccessSQLite {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection(connectionURL);
+            Connection connection = DriverManager.getConnection(connectionURL);
+            connection.close();
             System.out.println("IT WORKS");
         } catch (Exception e) {
             System.out.println("IT BROKE");
         }
+
 
     }
 
@@ -51,9 +53,12 @@ public class AccessSQLite {
      * @return The name of the user. (FirstName Surname), or empty string if user not found.
      */
     public String checkUsernamePassword(String username, String password) {
+        String name = "";
         // PreparedStatement - prevents sql injection
         try {
-            connection = DriverManager.getConnection(connectionURL);
+            // Opening connection
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection(connectionURL);
             preparedStatement = connection.prepareStatement(CHECK_USERNAME_PASSWORD);
 
             preparedStatement.setString(1, username);
@@ -61,16 +66,15 @@ public class AccessSQLite {
 
             resultSet = preparedStatement.executeQuery();
 
-
-
             if(resultSet.next()) {
-                return resultSet.getString("fname") + " " + resultSet.getString("sname");
+                name =  resultSet.getString("fname") + " " + resultSet.getString("sname");
             }
-            else return "";
+            connection.close();
+            //else return "";
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        return name;
     }
 
     /**
@@ -82,7 +86,9 @@ public class AccessSQLite {
      */
     public boolean addDoctor(String fname, String sname, String phone, String background) {
         try {
-            connection = DriverManager.getConnection(connectionURL);
+            // Opening connection
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection(connectionURL);
             preparedStatement = connection.prepareStatement(NEW_DOCTOR);
 
             preparedStatement.setString(1, fname);
@@ -91,6 +97,8 @@ public class AccessSQLite {
             preparedStatement.setString(4, background);
 
             preparedStatement.executeUpdate();
+
+            connection.close();
             return true;
 
         } catch (Exception e) {
@@ -152,17 +160,32 @@ public class AccessSQLite {
      * @return The results from asking the database for all of the messages for the user.
      * @throws SQLException Can happen when the query is executed.
      */
-    public ResultSet getUserMessages(String username) throws SQLException {
-        connection = DriverManager.getConnection(connectionURL);
+    public ArrayList<String> getUserMessages(String username)  {
+        // List to store all user messages as strings
+        ArrayList<String> messages = new ArrayList<>();
+        try {
+            // Opening connection
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection(connectionURL);
 
-        // Cannot use prepared statement here as broke some of the syntax
-        Statement statement = connection.createStatement();
-        resultSet  = statement.executeQuery("select m.message " + // getting the messages
-                                                "from messages m, administrator a " + // using these tables
-                                                "where m.aid = a.aid " + // this is a join one aids
-                                                "and a.username = '" + username + "' " + // getting messages for the user
-                                                "order by mid desc;" ); // the values at the top are newest
-        return resultSet;
+            // Cannot use prepared statement here as broke some of the syntax
+            Statement statement = connection.createStatement();
+            resultSet  = statement.executeQuery("select m.message " + // getting the messages
+                    "from messages m, administrator a " + // using these tables
+                    "where m.aid = a.aid " + // this is a join one aids
+                    "and a.username = '" + username + "' " + // getting messages for the user
+                    "order by mid desc;" ); // the values at the top are newest
+
+            // Moving returned messages into arraylist to be returned
+            while(resultSet.next()) {
+                messages.add(resultSet.getString("message"));
+            }
+
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return messages;
     }
 
 

@@ -1,4 +1,3 @@
-import database.AccessSQLite;
 import ui.DialogBox;
 import ui.GUI;
 import ui.GlobalUIVars;
@@ -18,8 +17,8 @@ public class Main {
         new GUI();
         if (GlobalUIVars.DEBUG) {
             new DialogBox("You are in debug mode.");
-            AccessSQLite sqlite = new AccessSQLite();
-            sqlite.testConnection();
+            //AccessSQLite sqlite = new AccessSQLite();
+            //sqlite.testConnection();
         }
 
     }
