@@ -188,7 +188,6 @@ public class AccessSQLite {
         return messages;
     }
 
-
     /**
      * Returns result set (previously run query)
      * @return Result set of previously run query
