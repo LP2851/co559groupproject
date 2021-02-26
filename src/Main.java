@@ -17,8 +17,6 @@ public class Main {
         new GUI();
         if (GlobalUIVars.DEBUG) {
             new DialogBox("You are in debug mode.");
-            //AccessSQLite sqlite = new AccessSQLite();
-            //sqlite.testConnection();
         }
 
     }

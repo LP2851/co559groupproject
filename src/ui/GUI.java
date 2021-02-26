@@ -224,7 +224,7 @@ public class GUI extends JFrame {
      * @param phoneNo String containing user input for phone number
      * @return true if number is valid, otherwise false.
      */
-    private boolean validatePhoneNumber(String phoneNo) {
+    protected boolean validatePhoneNumber(String phoneNo) {
         // Checks characters in phone number are numeric
         try {
             for (char c : phoneNo.toCharArray()) {

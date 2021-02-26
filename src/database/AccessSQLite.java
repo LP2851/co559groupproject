@@ -23,11 +23,27 @@ public class AccessSQLite {
      */
     public AccessSQLite() {}
 
+    public AccessSQLite(String databaseFilename) {
+        connectionURL = "jdbc:sqlite:" + databaseFilename;
+    }
+
+    public void runUpdateCommand(String sql) {
+        try {
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection(connectionURL);
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     /**
      * This is test code to check the database is set up.
      */
     public void testConnection() {
-
         try {
             Class.forName("org.sqlite.JDBC");
             Connection connection = DriverManager.getConnection(connectionURL);
@@ -36,8 +52,6 @@ public class AccessSQLite {
         } catch (Exception e) {
             System.out.println("IT BROKE");
         }
-
-
     }
 
     /**
