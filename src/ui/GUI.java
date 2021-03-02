@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
  * @version 0.1
  */
 public class GUI extends JFrame {
+    // Named components that can be in the window.
     private JPanel framePanel;
     private JPanel loginPanel;
     private JTextField usernameTextField;
@@ -33,11 +34,14 @@ public class GUI extends JFrame {
     private JTextField doctorPhoneField;
     private JTextField doctorBackgroundField;
 
+    // Values to store the user's name and also user's username
     private String activeUsersName;
     private String usersUsername;
 
+    // Connection to database
     private AccessSQLite accessSQLite = new AccessSQLite();
 
+    // Message window that opens when then user successfully logs in.
     private MessagesPopup messagesPopup;
 
     /**
@@ -45,6 +49,7 @@ public class GUI extends JFrame {
      * Adds action listeners for all buttons in the GUI.
      */
     public GUI() {
+        // Loads frame to login screen.
         initFrame();
 
         // Login Page- Login Button Pressed
@@ -58,20 +63,28 @@ public class GUI extends JFrame {
 
                 // TODO Password hashing?
                 activeUsersName = accessSQLite.checkUsernamePassword(username, password);
+
                 if (!activeUsersName.equals("")) { // username/password exists
+                    // Wipes data values from input fields (so next time someone tries to log in, they don't have
+                    // to remove old data values).
                     usernameTextField.setText(null);
                     passwordField1.setText(null);
 
+                    // Saves user's username
                     GlobalUIVars.debug("Username and password are correct");
                     usersUsername = username;
 
+                    // Changes panel to welcome screen
+                    // Sets person name to the name of the user.
                     setActivePanel(welcomePanel);
                     welcomeScreenNameLabel.setText(activeUsersName);
-
+                    // Opens messages of the user.
                     messagesPopup = new MessagesPopup(username);
                 } else {
+                    // Shows the error message on the screen
                     errorLabel.setVisible(true);
                     GlobalUIVars.debug("Username and password are incorrect.");
+                    // Clears the password field
                     passwordField1.setText(null);
                 }
             }
@@ -83,8 +96,10 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 GlobalUIVars.debug("Logging out from the account of: " + welcomeScreenNameLabel.getText());
                 setActivePanel(loginPanel);
+                // Removes details of the current user as they have logged out.
                 activeUsersName = "";
                 usersUsername = "";
+                // If the message popup isn't closed then it will be closed.
                 messagesPopup.dispose();
 
             }
@@ -112,7 +127,7 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 GlobalUIVars.debug("Opening new doctor page");
-
+                // Change to enter new doctor window
                 setActivePanel(enterNewDocPanel);
 
             }
@@ -132,11 +147,12 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 GlobalUIVars.debug("Returning to Welcome Page");
 
+                // Clears details in each of the fields.
                 doctorFNameField.setText(null);
                 doctorSNameField.setText(null);
                 doctorPhoneField.setText(null);
                 doctorBackgroundField.setText(null);
-
+                // Change window to welcome screen
                 setActivePanel(welcomePanel);
             }
         });
@@ -186,7 +202,10 @@ public class GUI extends JFrame {
 
                     } else {
                         // Show error message if something goes wrong when adding new doctor to the database
-                        new DialogBox("Database Error", "An unknown database error occurred.\nPlease try again.", DialogBox.MessageType.ERROR);
+                        new DialogBox(
+                                "Database Error",
+                                "An unknown database error occurred.\nPlease try again.",
+                                DialogBox.MessageType.ERROR);
                     }
 
 

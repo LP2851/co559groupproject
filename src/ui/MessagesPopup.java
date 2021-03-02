@@ -80,7 +80,6 @@ public class MessagesPopup extends JFrame {
         }
         // Creating the frame
         initFrame(messagePanel);
-
     }
 
     /**

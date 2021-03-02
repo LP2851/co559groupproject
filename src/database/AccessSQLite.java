@@ -4,7 +4,9 @@ import java.sql.*;
 import java.util.ArrayList;
 
 /**
- *
+ * Class used to connect to and get data from the SQLite database.
+ * @author Lucas
+ * @version 0.1
  */
 public class AccessSQLite {
     // Variables used for database access
@@ -23,25 +25,35 @@ public class AccessSQLite {
      */
     public AccessSQLite() {}
 
+    /**
+     * Constructor only used when creating and querying a test database.
+     * @param databaseFilename The file name of the testing database.
+     */
     public AccessSQLite(String databaseFilename) {
         connectionURL = "jdbc:sqlite:" + databaseFilename;
     }
 
+    /**
+     * Runs a command that doesn't have a response. These are UPDATE, INSERT and CREATE statements.
+     * @param sql An UPDATE, INSERT or CREATE statement.
+     */
     public void runUpdateCommand(String sql) {
         try {
+            // Connects to the database
             Class.forName("org.sqlite.JDBC");
             Connection connection = DriverManager.getConnection(connectionURL);
+            // Creates and runs query
             Statement statement = connection.createStatement();
             statement.executeUpdate(sql);
+            // Closes connection
             connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
     /**
-     * This is test code to check the database is set up.
+     * This is test code to check the database is set up and that its can be connected to.
      */
     public void testConnection() {
         try {
@@ -74,7 +86,7 @@ public class AccessSQLite {
             Class.forName("org.sqlite.JDBC");
             Connection connection = DriverManager.getConnection(connectionURL);
             preparedStatement = connection.prepareStatement(CHECK_USERNAME_PASSWORD);
-
+            // Adding values to statement- prevents SQL injection
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
 
@@ -84,7 +96,6 @@ public class AccessSQLite {
                 name =  resultSet.getString("fname") + " " + resultSet.getString("sname");
             }
             connection.close();
-            //else return "";
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -104,7 +115,7 @@ public class AccessSQLite {
             Class.forName("org.sqlite.JDBC");
             Connection connection = DriverManager.getConnection(connectionURL);
             preparedStatement = connection.prepareStatement(NEW_DOCTOR);
-
+            // Adding values to statement- prevents SQL injection
             preparedStatement.setString(1, fname);
             preparedStatement.setString(2, sname);
             preparedStatement.setString(3, phone);
@@ -209,6 +220,5 @@ public class AccessSQLite {
     public ResultSet getResultSet() {
         return resultSet;
     }
-
 
 }

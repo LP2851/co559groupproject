@@ -15,10 +15,8 @@ public class Main {
      */
     public static void main(String[] args) {
         new GUI();
-        if (GlobalUIVars.DEBUG) {
+        if (GlobalUIVars.DEBUG)
             new DialogBox("You are in debug mode.");
-        }
-
     }
 
 }

@@ -6,8 +6,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Test class for the GUI class. Tests none GUI related methods like the validatePhoneNumber() method.
+ * @author Lucas
+ * @version 0.1
+ */
 class GUITest {
 
+    // Variables used in the tests.
     static String validNumber = "01234567890";
     static String noNumber = "";
     static String tooShort = "01010101";
@@ -15,6 +21,9 @@ class GUITest {
     static String hasNonNumeric = "0123456789a";
     static GUI gui;
 
+    /**
+     * Creates a new GUI object before running the tests
+     */
     @BeforeAll
     static void setUp() {
         gui = new GUI();

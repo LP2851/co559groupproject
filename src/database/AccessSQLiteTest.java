@@ -9,10 +9,17 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for the AccessSQLite.
+ */
 class AccessSQLiteTest {
 
+    // Object to connect to database
     private AccessSQLite accessSQLite;
 
+    /**
+     * Recreates table and data in the tables before each test is run.
+     */
     @BeforeEach
     void setUp() {
         // Creates DB
@@ -180,9 +187,14 @@ class AccessSQLiteTest {
         assertTrue(accessSQLite.getUserMessages("tester4").isEmpty());
     }
 
+    /**
+     * After each test is completed, the test database is deleted.
+     */
     @AfterEach
     void cleanUp() {
+        // Gets the file
         File testingDB = new File("testing.db");
+        // Deletes file
         testingDB.delete();
     }
 
