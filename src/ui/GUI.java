@@ -33,6 +33,24 @@ public class GUI extends JFrame {
     private JTextField doctorSNameField;
     private JTextField doctorPhoneField;
     private JTextField doctorBackgroundField;
+    private JPanel viewBookingsPanel;
+    private JButton backFromViewBookingsButton;
+    private JTable table1;
+    private JButton enterNewBookingButton;
+    private JPanel enterNewBookingPanel;
+    private JButton goBackToViewBookings;
+    private JLabel enterNewBookingLabel;
+    private JComboBox patientNameComboBox;
+    private JComboBox dayComboBox;
+    private JComboBox monthSpinner;
+    private JComboBox yearSpinner;
+    private JComboBox startHourInput;
+    private JComboBox startMinInput;
+    private JButton enterBookingButton;
+    private JComboBox doctorNameComboBox;
+    private JComboBox endHourInput;
+    private JComboBox endMinInput;
+    private JButton resceduleBookingButton;
 
     // Values to store the user's name and also user's username
     private String activeUsersName;
@@ -43,6 +61,12 @@ public class GUI extends JFrame {
 
     // Message window that opens when then user successfully logs in.
     private MessagesPopup messagesPopup;
+
+    private static String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
+
+    private static String[] hours = {"07", "08", "09", "10", "11", "12",
+                                    "13", "14", "15", "16", "17", "18", "19"};
+    private static String[] mins = {"00", "10", "20", "30", "40", "50"};
 
     /**
      * Constructor for the GUI class. Sets up frame for login screen.
@@ -110,6 +134,7 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 GlobalUIVars.debug("Opening bookings page");
+                setActivePanel(viewBookingsPanel);
             }
         });
 
@@ -118,6 +143,7 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 GlobalUIVars.debug("Opening patient details page");
+                // TODO Go to patient details page
             }
         });
 
@@ -138,6 +164,7 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 GlobalUIVars.debug("Opening new patient page");
+                // TODO Go to new patient page
             }
         });
 
@@ -213,6 +240,60 @@ public class GUI extends JFrame {
             }
         });
 
+        // View Bookings Page- Go to Enter New Booking Page
+        enterNewBookingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Go to enter new booking page
+                // get all patients, get all doctors
+                initNewBookingComponents(new String[] {"Patient 1", "Patient 2"}, new String[] {"Doctor 1 (GP)", "Doctor 2"});
+                //initNewBookingComponents(accessSQLite.getAllPatients(), accessSQLite.getAllDoctors());
+                setActivePanel(enterNewBookingPanel);
+            }
+        });
+
+        // View Bookings Page- Go Back to Welcome Screen
+        backFromViewBookingsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setActivePanel(welcomePanel);
+            }
+        });
+
+        // Enter New Bookings Page- Create New Booking
+        enterBookingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Do checks and then add booking
+                // Check booking is valid and doesn't clash with doctor's other appointments
+                    // Show doctor's appointments on the day chosen if there is a clash.
+                    // And create dialog box.
+                // Check booking is valid and doesn't clash with patient's other appointments
+                    // Show patient's appointments on the day chosen if there is a clash.
+                    // And create dialog box.
+                // If succeeds then the booking is added.
+            }
+        });
+
+        // Enter New Bookings Page- Go Back to View Bookings Screen
+        goBackToViewBookings.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setActivePanel(viewBookingsPanel);
+            }
+        });
+
+        // Enter New Bookings Page- When the user selects a patient it should update the doctor field with
+        // their usual doctor if they have one.
+        patientNameComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Get user details and check for usual doctor
+                // String patientNHS = patientNameComboBox.getSelectedItem().toString();
+                // getPatientDetails
+                // DialogBox showing patient details
+            }
+        });
     }
 
     /**
@@ -260,6 +341,43 @@ public class GUI extends JFrame {
         else if(phoneNo.isEmpty()) return true;
         // Wrong length then invalid number
         else return false;
+    }
+
+    private void initNewBookingComponents(String[] patients, String[] doctors) {
+        patientNameComboBox.removeAllItems();
+        doctorNameComboBox.removeAllItems();
+        dayComboBox.removeAllItems();
+        yearSpinner.removeAllItems();
+        monthSpinner.removeAllItems();
+        startMinInput.removeAllItems();
+        startHourInput.removeAllItems();
+        endHourInput.removeAllItems();
+        endMinInput.removeAllItems();
+        for (int i = 1; i < 31; i++) {
+            dayComboBox.addItem(i);
+        }
+        for (int i = 1; i < 6; i++) {
+            yearSpinner.addItem(i + 2020);
+        }
+        for (String m : months) {
+            monthSpinner.addItem(m);
+        }
+        for (String h : hours) {
+            startHourInput.addItem(h);
+            endHourInput.addItem(h);
+        }
+        for (String m : mins) {
+            startMinInput.addItem(m);
+            endMinInput.addItem(m);
+        }
+
+        for (String p: patients) {
+            patientNameComboBox.addItem(p);
+        }
+
+        for (String d : doctors) {
+            doctorNameComboBox.addItem(d);
+        }
     }
 
 }

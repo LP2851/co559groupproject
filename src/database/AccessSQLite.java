@@ -1,7 +1,10 @@
 package database;
 
+import datetime.DateTimeHandler;
+
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Class used to connect to and get data from the SQLite database.
@@ -17,8 +20,12 @@ public class AccessSQLite {
     private static String connectionURL = "jdbc:sqlite:co559.db";
 
     // SQL Statements
-    public static final String NEW_DOCTOR = "insert into doctor (fname, sname, phone, background) values (?, ?, ?, ?) ;";
-    public static final String CHECK_USERNAME_PASSWORD = "select fname, sname from administrator where username = ? and password = ?;";
+    private static final String NEW_DOCTOR = "insert into doctor (fname, sname, phone, background) values (?, ?, ?, ?) ;";
+    private static final String CHECK_USERNAME_PASSWORD = "select fname, sname from administrator where username = ? and password = ?;";
+    private static final String NEW_BOOKING = "insert into booking (start, end, doctor, patient) values (?, ?, ?, ?);";
+    private static final String ALL_PATIENTS = "select nhsnumber from patient;";
+    private static final String ALL_DOCTORS = "select fname, sname, background from doctor;";
+    private static final String DOCTOR_FROM_PATIENT = "select doctor.fname, doctor.sname from doctor, patient where patient.nhsnumber = ? and patient.doctor = doctor.did;";
 
     /**
      * Empty constructor for the AccessMySQL class
@@ -142,7 +149,29 @@ public class AccessSQLite {
     /**
      * TODO Generate and run add booking command ( INSERT INTO (...) VALUES (...); )
      */
-    public void addBooking() {
+    public boolean addBooking(Date start, Date end, int doctorID, int patientID) {
+        DateTimeHandler dStart = new DateTimeHandler(start);
+        DateTimeHandler dEnd = new DateTimeHandler(end);
+        try {
+            // Opening connection
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection(connectionURL);
+            preparedStatement = connection.prepareStatement(NEW_BOOKING);
+            // Adding values to statement- prevents SQL injection
+            preparedStatement.setString(1, dStart.toString());
+            preparedStatement.setString(2, dEnd.toString());
+            preparedStatement.setInt(3, doctorID);
+            preparedStatement.setInt(4 , patientID);
+
+            preparedStatement.executeUpdate();
+
+            connection.close();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
 
     }
 
@@ -213,12 +242,55 @@ public class AccessSQLite {
         return messages;
     }
 
-    /**
-     * Returns result set (previously run query)
-     * @return Result set of previously run query
-     */
-    public ResultSet getResultSet() {
-        return resultSet;
+    public String[] getAllPatients() {
+        ArrayList<String> patients = new ArrayList<>();
+        try {
+            // Opening connection
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection(connectionURL);
+
+            // Cannot use prepared statement here as broke some of the syntax
+            preparedStatement = connection.prepareStatement(ALL_PATIENTS);
+
+            resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()) {
+                patients.add(resultSet.getString("nhsnumber"));
+            }
+
+            connection.close();
+            return (String[]) patients.toArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new String[] {};
+    }
+
+    public String[] getAllDoctors() {
+        ArrayList<String> doctors = new ArrayList<>();
+        try {
+            // Opening connection
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection(connectionURL);
+
+            // Cannot use prepared statement here as broke some of the syntax
+            preparedStatement = connection.prepareStatement(ALL_DOCTORS);
+
+            resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()) {
+                String doctorEntry = resultSet.getString("fname") + " " + resultSet.getString("sname");
+                String background = resultSet.getString("background");
+                doctorEntry += (background.equals("")) ? "" : (" (" + background + ")");
+                doctors.add(doctorEntry);
+            }
+
+            connection.close();
+            return (String[]) doctors.toArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new String[] {};
     }
 
 }

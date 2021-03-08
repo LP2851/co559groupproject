@@ -17,6 +17,7 @@ public class Main {
         new GUI();
         if (GlobalUIVars.DEBUG)
             new DialogBox("You are in debug mode.");
+
     }
 
 }
