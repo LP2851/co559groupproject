@@ -50,7 +50,7 @@ public class GUI extends JFrame {
     private JComboBox doctorNameComboBox;
     private JComboBox endHourInput;
     private JComboBox endMinInput;
-    private JButton resceduleBookingButton;
+    private JButton rescheduleBookingButton;
 
     // Values to store the user's name and also user's username
     private String activeUsersName;
@@ -343,6 +343,11 @@ public class GUI extends JFrame {
         else return false;
     }
 
+    /**
+     *
+     * @param patients
+     * @param doctors
+     */
     private void initNewBookingComponents(String[] patients, String[] doctors) {
         patientNameComboBox.removeAllItems();
         doctorNameComboBox.removeAllItems();
