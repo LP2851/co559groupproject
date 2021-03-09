@@ -52,6 +52,13 @@ public class Booking {
         this.doctor = doctor;
     }
 
+    public Booking(DateTimeHandler startDateTime, DateTimeHandler endDateTime, Patient patient, Doctor doctor) {
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.patient = patient;
+        this.doctor = doctor;
+    }
+
     public AbstractPerson getPatient() {
         return patient;
     }
@@ -88,17 +95,29 @@ public class Booking {
         return endDateTime.getDate();
     }
 
+    @Override
+    public String toString() {
+        return  "Patient: " + getPatient() + "\n" +
+                "Doctor: " + getDoctor() + "\n" +
+                "Start: " + getStartDateTime().toString() + "\n" +
+                "End: " + getEndDateTime().toString();
+    }
+
     public static AuthAnswer authenticateBooking(Booking b) {
         if(hasDoctorClash(b)) {
+            personBookingsMap.get(b.getPatient()).remove(b);
             return AuthAnswer.DOCTOR_CLASH;
         } else if (hasPatientClash(b)) {
+            personBookingsMap.get(b.getPatient()).remove(b);
             return AuthAnswer.PATIENT_CLASH;
         }
         return AuthAnswer.AUTHORISED;
     }
 
     private static boolean hasDoctorClash(Booking booking) {
-
+        if (personBookingsMap.get(booking.getDoctor()) == null) {
+            return false;
+        }
         for (Booking b : personBookingsMap.get(booking.getDoctor())) {
             if (hasClash(booking, b))
                 return true;
@@ -107,6 +126,9 @@ public class Booking {
     }
 
     private static boolean hasPatientClash(Booking booking) {
+        if (personBookingsMap.get(booking.getPatient()) == null) {
+            return false;
+        }
         for (Booking b : personBookingsMap.get(booking.getPatient())) {
             if (hasClash(booking, b))
                 return true;

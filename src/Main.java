@@ -1,3 +1,4 @@
+import database.data.Patient;
 import ui.DialogBox;
 import ui.GUI;
 import ui.GlobalUIVars;
@@ -15,9 +16,10 @@ public class Main {
      */
     public static void main(String[] args) {
         new GUI();
-        if (GlobalUIVars.DEBUG)
+        if (GlobalUIVars.DEBUG) {
             new DialogBox("You are in debug mode.");
-
+            new Patient(2851, "0123456789", "Lucas", "Phillips", "01234567890", 1);
+        }
     }
 
 }

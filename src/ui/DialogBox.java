@@ -51,6 +51,11 @@ public class DialogBox {
         }
     }
 
+    public static String createDialogBoxAndGetUserInput(String title, String message) {
+        JFrame frame = new JFrame();
+        return JOptionPane.showInputDialog(frame, message, title, JOptionPane.PLAIN_MESSAGE);
+    }
+
     /**
      * Enum to specify the type of dialog box wanted.
      */

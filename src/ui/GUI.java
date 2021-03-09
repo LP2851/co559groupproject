@@ -1,6 +1,10 @@
 package ui;
 
 import database.AccessSQLite;
+import database.data.Booking;
+import database.data.Doctor;
+import database.data.Patient;
+import database.datetime.DateTimeHandler;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -40,7 +44,7 @@ public class GUI extends JFrame {
     private JPanel enterNewBookingPanel;
     private JButton goBackToViewBookings;
     private JLabel enterNewBookingLabel;
-    private JComboBox patientNameComboBox;
+    private JButton patientNameComboBox;
     private JComboBox dayComboBox;
     private JComboBox monthSpinner;
     private JComboBox yearSpinner;
@@ -64,6 +68,8 @@ public class GUI extends JFrame {
 
     private static final String[] MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
 
+    private static final String defaultPatientDetailsButtonText = "Click to Enter Patient Details";
+
     /**
      * Constructor for the GUI class. Sets up frame for login screen.
      * Adds action listeners for all buttons in the GUI.
@@ -71,6 +77,9 @@ public class GUI extends JFrame {
     public GUI() {
         // Loads frame to login screen.
         initFrame();
+        // Making sure all data is in the system
+        accessSQLite.getAllDoctors();
+        accessSQLite.getAllPatients();
 
         // Login Page- Login Button Pressed
         loginButton.addActionListener(new ActionListener() {
@@ -275,6 +284,7 @@ public class GUI extends JFrame {
         goBackToViewBookings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                patientNameComboBox.setText(defaultPatientDetailsButtonText);
                 setActivePanel(viewBookingsPanel);
             }
         });
@@ -288,6 +298,131 @@ public class GUI extends JFrame {
                 // String patientNHS = patientNameComboBox.getSelectedItem().toString();
                 // getPatientDetails
                 // DialogBox showing patient details
+            }
+        });
+
+        // Enter New Bookings Page- Patient Name/NHS Number Button
+        patientNameComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean isValidValue = false;
+                String result;
+                while(!isValidValue) {
+                    result = DialogBox.createDialogBoxAndGetUserInput(
+                            "Patient NHS Number Lookup",
+                            "Please Enter the 10 digit NHS Number of the Patient:\nIf you want to exit this screen then do not enter anything in the text field and press ok.")
+                            .strip();
+                    if (result.isEmpty()) {
+                        patientNameComboBox.setText(defaultPatientDetailsButtonText);
+                        isValidValue = true;
+                    } else {
+                        if (validateNHSNumber(result)) {
+                            Patient p = isNHSNumber(result);
+                            if (p != null) {
+                                new DialogBox("Patient: " + result,
+                                        p.getAllDetailsString() + "\nIf these values are not correct then try again.",
+                                        DialogBox.MessageType.INFORMATION);
+                                patientNameComboBox.setText(p.toString());
+                                doctorNameComboBox.setSelectedItem(p.getDoctor().toString());
+                                isValidValue = true;
+                            } else {
+                                new DialogBox("Patient Doesn't Exist",
+                                        "The patient NHS number doesn't exist.\nYou will be returned to the input screen.\nIf you wish to stop inputting a new patient then dont type in the text field.",
+                                        DialogBox.MessageType.ERROR);
+                            }
+                        } else {
+                            new DialogBox("NHS Number Error",
+                                    "The NHS number you have inputted is invalid.\nNHS numbers must be 10 characters in length and only contain numeric characters.",
+                                    DialogBox.MessageType.ERROR);
+                        }
+                    }
+                }
+            }
+        });
+
+        // Enter New Bookings Page- Start Time Hour Changes the End Hour too.
+        startHourInput.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                endHourInput.setSelectedItem(startHourInput.getSelectedItem());
+            }
+        });
+
+        // Enter New Bookings Page- Start Time Minute Changes the End Minute too.
+        startMinInput.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                endMinInput.setSelectedItem(startMinInput.getSelectedItem());
+            }
+        });
+
+        // Enter New Bookings Page- Enter the booking
+        enterBookingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int day = (int) dayComboBox.getSelectedItem();
+                int month = monthSpinner.getSelectedIndex();
+                int year = (int) yearSpinner.getSelectedItem();
+
+                DateTimeHandler startDTH = getDateTimeHandlerFor(day, month, year,
+                        (int) startHourInput.getSelectedItem(),
+                        (int) (startMinInput.getSelectedItem().equals("00") ? 0 : startMinInput.getSelectedItem()));
+                DateTimeHandler endDTH = getDateTimeHandlerFor(day, month, year,
+                        (int) endHourInput.getSelectedItem(),
+                        (int) (endMinInput.getSelectedItem().equals("00") ? 0 : endMinInput.getSelectedItem()));
+
+                if (patientNameComboBox.getText().equals(defaultPatientDetailsButtonText)) {
+                    new DialogBox("Patient Not Selected",
+                            "You have not selected a patient.\nPlease enter a patient and try again.",
+                            DialogBox.MessageType.ERROR);
+
+                } else if (!startDTH.checkDateIsAfterNow()) {
+                    new DialogBox("Date Error",
+                            "The date inputted is before today.\nThe date will now be reset to today.",
+                            DialogBox.MessageType.ERROR);
+                    dayComboBox.setSelectedItem(DateTimeHandler.getNow().getDate());
+                    monthSpinner.setSelectedIndex(DateTimeHandler.getNow().getMonth());
+                    yearSpinner.setSelectedItem(DateTimeHandler.getNow().getYear() + 1900);
+                } else if (!startDTH.checkIsBefore(endDTH)){
+                    new DialogBox("Time Error",
+                            "The end time inputted is not after the start time.",
+                            DialogBox.MessageType.ERROR);
+                    // Not sure if I want to do this vvv
+                    // endHourInput.setSelectedItem(startHourInput.getSelectedItem());
+                    // endMinInput.setSelectedItem(startMinInput.getSelectedItem());
+                } else {
+                    String nhsnumber = getNHSNumberFromPatientString(patientNameComboBox.getText());
+                    Patient p = Patient.getPatientFromNHSNumber(nhsnumber);
+
+                    Booking b = new Booking(startDTH, endDTH, p, Doctor.getDoctorFromString((String) doctorNameComboBox.getSelectedItem()));
+
+                    switch (Booking.authenticateBooking(b)) {
+                        // When fails, the bookings is removed from booking map automatically.
+                        case DOCTOR_CLASH:
+                            // TODO EXTRA: Show user the doctors bookings.
+                            new DialogBox("Booking Clash Error: Doctor",
+                                    "The booking clashes with the chosen doctor's bookings.\nPlease choose another doctor or another date/time.",
+                                    DialogBox.MessageType.ERROR);
+                            break;
+                        case PATIENT_CLASH:
+                            // TODO EXTRA: Show user the clients bookings.
+                            new DialogBox("Booking Clash Error: Patient",
+                                    "The booking clashes with the chosen patient's bookings.\nPlease choose another date/time.",
+                                    DialogBox.MessageType.ERROR);
+                            break;
+                        case AUTHORISED:
+                            // TODO Show booking details in confirmation message and return to view bookings
+                            new DialogBox(b.toString());
+                            // TODO Send to booking to database
+                            patientNameComboBox.setText(defaultPatientDetailsButtonText);
+                            setActivePanel(viewBookingsPanel);
+                            break;
+                    }
+
+                }
+
+
+
             }
         });
     }
@@ -339,6 +474,38 @@ public class GUI extends JFrame {
         else return false;
     }
 
+    protected boolean validateNHSNumber(String nhsNumber) {
+        // Checks characters in phone number are numeric
+        try {
+            for (char c : nhsNumber.toCharArray()) {
+                Integer.parseInt("" + c);
+            }
+        } catch (NumberFormatException e) {
+            // Number not valid (contains non-numeric characters)
+            return false;
+        }
+
+        // If numeric and length of number is 10 characters then number is valid
+        if(nhsNumber.length() == 10) return true;
+            // If number is empty (this is allowed) then number is valid
+        else if(nhsNumber.isEmpty()) return true;
+            // Wrong length then invalid number
+        else return false;
+    }
+
+    protected Patient isNHSNumber(String nhsNumber) {
+        return Patient.getPatientFromNHSNumber(nhsNumber);
+    }
+
+    private String getNHSNumberFromPatientString(String patientString) {
+        int startIndex = patientString.indexOf("(") + 1;
+        return patientString.substring(startIndex, startIndex+10);
+    }
+
+    private DateTimeHandler getDateTimeHandlerFor(int day, int month, int year, int hour, int min) {
+        return new DateTimeHandler(year, month, day, hour, min);
+    }
+
     /**
      *
      * @param patients
@@ -346,7 +513,7 @@ public class GUI extends JFrame {
      */
     private void initNewBookingComponents(String[] patients, String[] doctors) {
 
-        patientNameComboBox.removeAllItems();
+        //patientNameComboBox.removeAllItems();
         doctorNameComboBox.removeAllItems();
         yearSpinner.removeAllItems();
         monthSpinner.removeAllItems();
@@ -364,6 +531,10 @@ public class GUI extends JFrame {
             monthSpinner.addItem(m);
         }
 
+        dayComboBox.setSelectedItem(DateTimeHandler.getNow().getDate());
+        monthSpinner.setSelectedIndex(DateTimeHandler.getNow().getMonth());
+        yearSpinner.setSelectedItem(DateTimeHandler.getNow().getYear()+1900);
+
         for (int h = 7; h < 20; h++) {
             startHourInput.addItem(h);
             endHourInput.addItem(h);
@@ -373,9 +544,9 @@ public class GUI extends JFrame {
             endMinInput.addItem((m == 0) ? "00" : m);
         }
 
-        for (String p: patients) {
-            patientNameComboBox.addItem(p);
-        }
+        //for (String p: patients) {
+        //    patientNameComboBox.addItem(p);
+        //}
 
         for (String d : doctors) {
             doctorNameComboBox.addItem(d);

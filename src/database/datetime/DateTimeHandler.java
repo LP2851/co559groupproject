@@ -42,11 +42,15 @@ public class DateTimeHandler {
     }
 
     public static boolean checkDateIsAfterNow(Date d) {
-        return d.after(new Date());
+        return d.after(getNow());
+    }
+
+    public boolean checkIsBefore(DateTimeHandler dth) {
+        return (date.before(dth.getDate()));
     }
 
     public static Date getDateFromValues(int year, int month, int day, int hour, int min) {
-        Date d = new Date(year-1900, month-1, day);
+        Date d = new Date(year-1900, month, day);
         d.setHours(hour);
         d.setMinutes(min);
         return d;
@@ -61,4 +65,7 @@ public class DateTimeHandler {
         return date;
     }
 
+    public static Date getNow() {
+        return new Date();
+    }
 }

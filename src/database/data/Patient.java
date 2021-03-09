@@ -8,18 +8,24 @@ public class Patient extends AbstractPerson {
     private int doctorID;
     private AbstractPerson doctor;
     private String nhsNumber;
-    public static Map<Integer, Patient> patientIDMap = new HashMap<>();
+    private static Map<Integer, Patient> patientIDMap = new HashMap<>();
+    private static Map<String, Patient> patientNHSNumberMap = new HashMap<>();
 
     public Patient(int id, String nhsNumber, String fname, String sname, String phone, int doctorID) {
         super(id, fname, sname, phone);
         this.nhsNumber = nhsNumber;
         this.doctorID = doctorID;
-        patientIDMap.put(id, this);
         this.doctor = Doctor.getDoctorFromID(doctorID);
+        patientIDMap.put(id, this);
+        patientNHSNumberMap.put(nhsNumber, this);
     }
 
     public static Patient getPatientFromID(int id) {
         return patientIDMap.get(id);
+    }
+
+    public static Patient getPatientFromNHSNumber(String nhs) {
+        return patientNHSNumberMap.get(nhs);
     }
 
     public int getDoctorID() {
@@ -50,4 +56,12 @@ public class Patient extends AbstractPerson {
     public void setDoctor(Doctor doctor) {
         this.doctor = doctor;
     }
+
+    public String getAllDetailsString() {
+        return  "NHS Number: " + nhsNumber + "\n" +
+                "Patient Name: " + getFullName() + "\n" +
+                "Patient Phone Number: " + getPhone() + "\n" +
+                "Usual Doctor: " + doctor;
+    }
+
 }
