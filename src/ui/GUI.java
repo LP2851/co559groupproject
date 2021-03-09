@@ -62,11 +62,7 @@ public class GUI extends JFrame {
     // Message window that opens when then user successfully logs in.
     private MessagesPopup messagesPopup;
 
-    private static String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
-
-    private static String[] hours = {"07", "08", "09", "10", "11", "12",
-                                    "13", "14", "15", "16", "17", "18", "19"};
-    private static String[] mins = {"00", "10", "20", "30", "40", "50"};
+    private static final String[] MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
 
     /**
      * Constructor for the GUI class. Sets up frame for login screen.
@@ -246,8 +242,8 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // TODO Go to enter new booking page
                 // get all patients, get all doctors
-                initNewBookingComponents(new String[] {"Patient 1", "Patient 2"}, new String[] {"Doctor 1 (GP)", "Doctor 2"});
-                //initNewBookingComponents(accessSQLite.getAllPatients(), accessSQLite.getAllDoctors());
+                //initNewBookingComponents(new String[] {"Patient 1", "Patient 2"}, new String[] {"Doctor 1 (GP)", "Doctor 2"});
+                initNewBookingComponents(accessSQLite.getAllPatients(), accessSQLite.getAllDoctors());
                 setActivePanel(enterNewBookingPanel);
             }
         });
@@ -349,31 +345,32 @@ public class GUI extends JFrame {
      * @param doctors
      */
     private void initNewBookingComponents(String[] patients, String[] doctors) {
+
         patientNameComboBox.removeAllItems();
         doctorNameComboBox.removeAllItems();
-        dayComboBox.removeAllItems();
         yearSpinner.removeAllItems();
         monthSpinner.removeAllItems();
         startMinInput.removeAllItems();
         startHourInput.removeAllItems();
         endHourInput.removeAllItems();
         endMinInput.removeAllItems();
-        for (int i = 1; i < 31; i++) {
-            dayComboBox.addItem(i);
-        }
+
+        setUpDatesComboBox(31);
+
         for (int i = 1; i < 6; i++) {
             yearSpinner.addItem(i + 2020);
         }
-        for (String m : months) {
+        for (String m : MONTHS) {
             monthSpinner.addItem(m);
         }
-        for (String h : hours) {
+
+        for (int h = 7; h < 20; h++) {
             startHourInput.addItem(h);
             endHourInput.addItem(h);
         }
-        for (String m : mins) {
-            startMinInput.addItem(m);
-            endMinInput.addItem(m);
+        for (int m = 0; m < 60; m += 10) {
+            startMinInput.addItem((m == 0) ? "00" : m);
+            endMinInput.addItem((m == 0) ? "00" : m);
         }
 
         for (String p: patients) {
@@ -382,6 +379,13 @@ public class GUI extends JFrame {
 
         for (String d : doctors) {
             doctorNameComboBox.addItem(d);
+        }
+    }
+
+    private void setUpDatesComboBox(int maxDate) {
+        dayComboBox.removeAllItems();
+        for (int i = 1; i < maxDate+1; i++) {
+            dayComboBox.addItem(i);
         }
     }
 

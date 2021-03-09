@@ -1,4 +1,4 @@
-package datetime;
+package database.datetime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

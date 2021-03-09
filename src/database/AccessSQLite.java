@@ -1,6 +1,9 @@
 package database;
 
-import datetime.DateTimeHandler;
+import database.data.AbstractPerson;
+import database.data.Doctor;
+import database.data.Patient;
+import database.datetime.DateTimeHandler;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,8 +26,8 @@ public class AccessSQLite {
     private static final String NEW_DOCTOR = "insert into doctor (fname, sname, phone, background) values (?, ?, ?, ?) ;";
     private static final String CHECK_USERNAME_PASSWORD = "select fname, sname from administrator where username = ? and password = ?;";
     private static final String NEW_BOOKING = "insert into booking (start, end, doctor, patient) values (?, ?, ?, ?);";
-    private static final String ALL_PATIENTS = "select nhsnumber from patient;";
-    private static final String ALL_DOCTORS = "select fname, sname, background from doctor;";
+    private static final String ALL_PATIENTS = "select * from patient;";
+    private static final String ALL_DOCTORS = "select * from doctor;";
     private static final String DOCTOR_FROM_PATIENT = "select doctor.fname, doctor.sname from doctor, patient where patient.nhsnumber = ? and patient.doctor = doctor.did;";
 
     /**
@@ -243,7 +246,7 @@ public class AccessSQLite {
     }
 
     public String[] getAllPatients() {
-        ArrayList<String> patients = new ArrayList<>();
+        ArrayList<AbstractPerson> patients = new ArrayList<>();
         try {
             // Opening connection
             Class.forName("org.sqlite.JDBC");
@@ -255,11 +258,21 @@ public class AccessSQLite {
             resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
-                patients.add(resultSet.getString("nhsnumber"));
+                patients.add(new Patient(
+                        resultSet.getInt("pid"),
+                        resultSet.getString("nhsnumber"),
+                        resultSet.getString("fname"),
+                        resultSet.getString("sname"),
+                        resultSet.getString("phone"),
+                        resultSet.getInt("doctor")
+                ));
             }
 
             connection.close();
-            return (String[]) patients.toArray();
+
+            //Collections.sort(patients);
+
+            return AbstractPerson.toArray(patients);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -267,7 +280,7 @@ public class AccessSQLite {
     }
 
     public String[] getAllDoctors() {
-        ArrayList<String> doctors = new ArrayList<>();
+        ArrayList<AbstractPerson> doctors = new ArrayList<>();
         try {
             // Opening connection
             Class.forName("org.sqlite.JDBC");
@@ -279,18 +292,24 @@ public class AccessSQLite {
             resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
-                String doctorEntry = resultSet.getString("fname") + " " + resultSet.getString("sname");
-                String background = resultSet.getString("background");
-                doctorEntry += (background.equals("")) ? "" : (" (" + background + ")");
-                doctors.add(doctorEntry);
+                doctors.add(new Doctor(
+                        resultSet.getInt("did"),
+                        resultSet.getString("fname"),
+                        resultSet.getString("sname"),
+                        resultSet.getString("phone"),
+                        resultSet.getString("background")
+                ));
             }
 
             connection.close();
-            return (String[]) doctors.toArray();
+            // Collections.sort(AbstractPerson.toArray(doctors)); // sorted in toArray method
+            return AbstractPerson.toArray(doctors);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return new String[] {};
     }
+
+
 
 }
