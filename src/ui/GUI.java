@@ -145,6 +145,7 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 GlobalUIVars.debug("Opening new patient page");
                 // Change to enter new doctor window
+                System.out.println("ping");
                 setActivePanel(enterNewPatPanel);
             }
         });

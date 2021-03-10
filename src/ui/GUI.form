@@ -512,13 +512,13 @@
                 </constraints>
                 <properties/>
               </component>
-              <component id="ee26a" class="javax.swing.JButton" binding="addNewPatientButton" default-binding="true">
+              <component id="ee26a" class="javax.swing.JButton" binding="enterNewPatientButton" default-binding="true">
                 <constraints>
                   <grid row="5" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="0.0" weighty="0.0"/>
                 </constraints>
                 <properties>
-                  <text value="Enter New Doctor"/>
+                  <text value="Enter New Patient"/>
                 </properties>
               </component>
               <vspacer id="6a26b">
