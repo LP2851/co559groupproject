@@ -27,12 +27,18 @@ public class GUI extends JFrame {
     private JButton logoutButton;
     private JLabel welcomeScreenNameLabel;
     private JPanel enterNewDocPanel;
+    private JPanel enterNewPatPanel;
     private JButton goBackButton;
+    private JButton goBackButton1;
     private JButton enterNewDoctorButton;
     private JTextField doctorFNameField;
     private JTextField doctorSNameField;
     private JTextField doctorPhoneField;
     private JTextField doctorBackgroundField;
+    private JTextField patientFNameField;
+    private JTextField patientSNameField;
+    private JTextField patientPhoneField;
+    private JTextField patientNHSField;
 
     // Values to store the user's name and also user's username
     private String activeUsersName;
@@ -138,6 +144,8 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 GlobalUIVars.debug("Opening new patient page");
+                // Change to enter new doctor window
+                setActivePanel(enterNewPatPanel);
             }
         });
 
@@ -152,6 +160,21 @@ public class GUI extends JFrame {
                 doctorSNameField.setText(null);
                 doctorPhoneField.setText(null);
                 doctorBackgroundField.setText(null);
+                // Change window to welcome screen
+                setActivePanel(welcomePanel);
+            }
+        });
+
+        goBackButton1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GlobalUIVars.debug("Returning to Welcome Page");
+
+                // Clears details in each of the fields.
+                patientFNameField.setText(null);
+                patientSNameField.setText(null);
+                patientPhoneField.setText(null);
+                patientNHSField.setText(null);
                 // Change window to welcome screen
                 setActivePanel(welcomePanel);
             }
