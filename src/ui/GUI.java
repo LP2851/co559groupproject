@@ -383,13 +383,17 @@ public class GUI extends JFrame {
                     dayComboBox.setSelectedItem(DateTimeHandler.getNow().getDate());
                     monthSpinner.setSelectedIndex(DateTimeHandler.getNow().getMonth());
                     yearSpinner.setSelectedItem(DateTimeHandler.getNow().getYear() + 1900);
-                } else if (!startDTH.checkIsBefore(endDTH)){
+                } else if (!startDTH.checkIsBefore(endDTH)) {
                     new DialogBox("Time Error",
                             "The end time inputted is not after the start time.",
                             DialogBox.MessageType.ERROR);
                     // Not sure if I want to do this vvv
                     // endHourInput.setSelectedItem(startHourInput.getSelectedItem());
                     // endMinInput.setSelectedItem(startMinInput.getSelectedItem());
+                } else if (!DateTimeHandler.isValidDateFromInputs(day, month, year)){
+                    new DialogBox("Invalid Date Error",
+                            "The date chosen is not valid.",
+                            DialogBox.MessageType.ERROR);
                 } else {
                     String nhsnumber = getNHSNumberFromPatientString(patientNameComboBox.getText());
                     Patient p = Patient.getPatientFromNHSNumber(nhsnumber);
@@ -397,7 +401,7 @@ public class GUI extends JFrame {
                     Booking b = new Booking(startDTH, endDTH, p, Doctor.getDoctorFromString((String) doctorNameComboBox.getSelectedItem()));
 
                     switch (Booking.authenticateBooking(b)) {
-                        // When fails, the bookings is removed from booking map automatically.
+                        // The booking is removed from the map after this is done (as doesn't have a
                         case DOCTOR_CLASH:
                             // TODO EXTRA: Show user the doctors bookings.
                             new DialogBox("Booking Clash Error: Doctor",
@@ -418,11 +422,7 @@ public class GUI extends JFrame {
                             setActivePanel(viewBookingsPanel);
                             break;
                     }
-
                 }
-
-
-
             }
         });
     }

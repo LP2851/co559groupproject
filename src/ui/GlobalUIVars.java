@@ -9,10 +9,10 @@ public class GlobalUIVars {
     public static final String APP_NAME = "Administrator Doctor Program Thingy";
 
     // Debug value
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     /**
-     * If debug moode is on, this method will print debug messages in the terminal.
+     * If debug mode is on, this method will print debug messages in the terminal.
      * @param s Message to be printed in the terminal.
      */
     public static void debug(String s) {

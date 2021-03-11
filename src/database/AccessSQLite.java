@@ -1,6 +1,7 @@
 package database;
 
 import database.data.AbstractPerson;
+import database.data.Booking;
 import database.data.Doctor;
 import database.data.Patient;
 import database.datetime.DateTimeHandler;
@@ -29,6 +30,7 @@ public class AccessSQLite {
     private static final String ALL_PATIENTS = "select * from patient;";
     private static final String ALL_DOCTORS = "select * from doctor;";
     private static final String DOCTOR_FROM_PATIENT = "select doctor.fname, doctor.sname from doctor, patient where patient.nhsnumber = ? and patient.doctor = doctor.did;";
+    private static final String ALL_BOOKINGS = "select * from booking;";
 
     /**
      * Empty constructor for the AccessMySQL class
@@ -310,6 +312,33 @@ public class AccessSQLite {
         return new String[] {};
     }
 
+    public ArrayList<Booking> getAllBookings() {
+        ArrayList<Booking> bookings = new ArrayList<>();
+        try {
+            // Opening connection
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection(connectionURL);
 
+            // Cannot use prepared statement here as broke some of the syntax
+            preparedStatement = connection.prepareStatement(ALL_BOOKINGS);
+
+            resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()) {
+                bookings.add(new Booking(
+                    resultSet.getInt("bid"),
+                    resultSet.getString("startDateTime"),
+                    resultSet.getString("endDateTime"),
+                    resultSet.getInt("patient"),
+                    resultSet.getInt("doctor")
+                ));
+            }
+
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bookings;
+    }
 
 }

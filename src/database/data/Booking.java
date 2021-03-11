@@ -111,6 +111,7 @@ public class Booking {
             personBookingsMap.get(b.getPatient()).remove(b);
             return AuthAnswer.PATIENT_CLASH;
         }
+        personBookingsMap.get(b.getPatient()).remove(b);
         return AuthAnswer.AUTHORISED;
     }
 

@@ -33,7 +33,6 @@ public class DateTimeHandler {
 
     private String getStringFromDate() {
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_STRING);
-        //System.out.println(sdf.format(date));
         return sdf.format(date);
     }
 
@@ -67,5 +66,20 @@ public class DateTimeHandler {
 
     public static Date getNow() {
         return new Date();
+    }
+
+    public static boolean isValidDateFromInputs(int day, int month, int year) {
+        // FEB = 28/29 Days
+        if (month == 1) {
+            if (year % 4 == 0 && day > 29) {
+                return false;
+            } else if (day > 28) {
+                return false;
+            }
+        // APR, JUN, SEPT, NOV = 30 days
+        } else if (day == 31 && (month == 3 || month == 5 || month == 8 || month == 10)) {
+            return false;
+        }
+        return true;
     }
 }
