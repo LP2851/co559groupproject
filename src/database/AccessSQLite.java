@@ -26,7 +26,7 @@ public class AccessSQLite {
     // SQL Statements
     private static final String NEW_DOCTOR = "insert into doctor (fname, sname, phone, background) values (?, ?, ?, ?) ;";
     private static final String CHECK_USERNAME_PASSWORD = "select fname, sname from administrator where username = ? and password = ?;";
-    private static final String NEW_BOOKING = "insert into booking (start, end, doctor, patient) values (?, ?, ?, ?);";
+    private static final String NEW_BOOKING = "insert into booking (startDateTime, endDateTime, doctor, patient) values (?, ?, ?, ?);";
     private static final String NEW_PATIENT_WITH_DOCTOR = "insert into patient (nhsnumber, fname, sname, phone, doctor) values (?, ?, ?, ?, ?);";
     private static final String NEW_PATIENT_WITHOUT_DOCTOR = "insert into patient (nhsnumber, fname, sname, phone) values (?, ?, ?, ?);";
     private static final String ALL_PATIENTS = "select * from patient;";

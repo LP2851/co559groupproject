@@ -12,7 +12,7 @@ public class Booking {
     private int id;
     private DateTimeHandler startDateTime;
     private DateTimeHandler endDateTime;
-    private static Map<AbstractPerson, List<Booking>> personBookingsMap = new HashMap<>();
+    private static Map<String, List<Booking>> personBookingsMap = new HashMap<>();
 
     public Booking(int id, String startDateTime, String endDateTime, int patient, int doctor) {
         this.id = id;
@@ -45,20 +45,20 @@ public class Booking {
     }
 
     private void addToMap() {
-        if(personBookingsMap.containsKey(patient)) {
-            personBookingsMap.get(patient).add(this);
+        if(personBookingsMap.containsKey("p" + patient.getId())) {
+            personBookingsMap.get("p" + patient.getId()).add(this);
         } else {
             ArrayList<Booking> personsBookings = new ArrayList<>();
             personsBookings.add(this);
-            personBookingsMap.put(patient, personsBookings);
+            personBookingsMap.put("p" + patient.getId(), personsBookings);
         }
 
-        if(personBookingsMap.containsKey(doctor)) {
-            personBookingsMap.get(doctor).add(this);
+        if(personBookingsMap.containsKey("d" + doctor.getId())) {
+            personBookingsMap.get("d" + doctor.getId()).add(this);
         } else {
             ArrayList<Booking> personsBookings = new ArrayList<>();
             personsBookings.add(this);
-            personBookingsMap.put(patient, personsBookings);
+            personBookingsMap.put("d" + doctor.getId(), personsBookings);
         }
     }
 
@@ -108,10 +108,10 @@ public class Booking {
 
     public static AuthAnswer authenticateBooking(Booking b) {
         if(hasDoctorClash(b)) {
-            personBookingsMap.get(b.getPatient()).remove(b);
+            //personBookingsMap.get(b.getPatient()).remove(b);
             return AuthAnswer.DOCTOR_CLASH;
         } else if (hasPatientClash(b)) {
-            personBookingsMap.get(b.getPatient()).remove(b);
+            //personBookingsMap.get(b.getPatient()).remove(b);
             return AuthAnswer.PATIENT_CLASH;
         }
         //personBookingsMap.get(b.getPatient()).remove(b);
@@ -119,10 +119,10 @@ public class Booking {
     }
 
     private static boolean hasDoctorClash(Booking booking) {
-        if (personBookingsMap.get(booking.getDoctor()) == null) {
+        if (personBookingsMap.get("d" + booking.getDoctor().getId()) == null) {
             return false;
         }
-        for (Booking b : personBookingsMap.get(booking.getDoctor())) {
+        for (Booking b : personBookingsMap.get("d" + booking.getDoctor().getId())) {
             if (hasClash(booking, b))
                 return true;
         }
@@ -130,10 +130,10 @@ public class Booking {
     }
 
     private static boolean hasPatientClash(Booking booking) {
-        if (personBookingsMap.get(booking.getPatient()) == null) {
+        if (personBookingsMap.get("p" + booking.getPatient().getId()) == null) {
             return false;
         }
-        for (Booking b : personBookingsMap.get(booking.getPatient())) {
+        for (Booking b : personBookingsMap.get("p" + booking.getPatient().getId())) {
             if (hasClash(booking, b))
                 return true;
         }
@@ -155,8 +155,11 @@ public class Booking {
         Date alreadyDateStart = alreadyBooking.getStartDateTimeAsDate();
         Date alreadyDateEnd = alreadyBooking.getEndDateTimeAsDate();
         return (
-                (tryDateStart.before(alreadyDateStart) && tryDateEnd.before(alreadyDateStart)) ||
-                (tryDateStart.after(alreadyDateEnd) && tryDateEnd.after(alreadyDateEnd))
+                ((tryDateStart.before(alreadyDateStart) && tryDateEnd.before(alreadyDateStart)) &&
+                !(tryDateStart.after(alreadyDateEnd) && tryDateEnd.after(alreadyDateEnd))) ||
+
+                !((tryDateStart.before(alreadyDateStart) && tryDateEnd.before(alreadyDateStart)) &&
+                (tryDateStart.after(alreadyDateEnd) && tryDateEnd.after(alreadyDateEnd)))
                 );
     }
 
