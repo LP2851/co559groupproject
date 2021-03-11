@@ -9,7 +9,7 @@ public class GlobalUIVars {
     public static final String APP_NAME = "Administrator Doctor Program Thingy";
 
     // Debug value
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     /**
      * If debug mode is on, this method will print debug messages in the terminal.
