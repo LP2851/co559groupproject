@@ -1,5 +1,6 @@
 package database.data;
 
+import database.AccessSQLite;
 import database.datetime.DateTimeHandler;
 
 import java.text.ParseException;
@@ -26,6 +27,23 @@ public class Booking {
         addToMap();
     }
 
+
+
+    public Booking(int id, Date startDateTime, Date endDateTime, Patient patient, Doctor doctor) {
+        this.id = id;
+        this.startDateTime = new DateTimeHandler(startDateTime);
+        this.endDateTime = new DateTimeHandler(endDateTime);
+        this.patient = patient;
+        this.doctor = doctor;
+    }
+
+    public Booking(DateTimeHandler startDateTime, DateTimeHandler endDateTime, Patient patient, Doctor doctor) {
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.patient = patient;
+        this.doctor = doctor;
+    }
+
     private void addToMap() {
         if(personBookingsMap.containsKey(patient)) {
             personBookingsMap.get(patient).add(this);
@@ -42,21 +60,6 @@ public class Booking {
             personsBookings.add(this);
             personBookingsMap.put(patient, personsBookings);
         }
-    }
-
-    public Booking(int id, Date startDateTime, Date endDateTime, Patient patient, Doctor doctor) {
-        this.id = id;
-        this.startDateTime = new DateTimeHandler(startDateTime);
-        this.endDateTime = new DateTimeHandler(endDateTime);
-        this.patient = patient;
-        this.doctor = doctor;
-    }
-
-    public Booking(DateTimeHandler startDateTime, DateTimeHandler endDateTime, Patient patient, Doctor doctor) {
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.patient = patient;
-        this.doctor = doctor;
     }
 
     public AbstractPerson getPatient() {
@@ -111,7 +114,7 @@ public class Booking {
             personBookingsMap.get(b.getPatient()).remove(b);
             return AuthAnswer.PATIENT_CLASH;
         }
-        personBookingsMap.get(b.getPatient()).remove(b);
+        //personBookingsMap.get(b.getPatient()).remove(b);
         return AuthAnswer.AUTHORISED;
     }
 
@@ -155,6 +158,12 @@ public class Booking {
                 (tryDateStart.before(alreadyDateStart) && tryDateEnd.before(alreadyDateStart)) ||
                 (tryDateStart.after(alreadyDateEnd) && tryDateEnd.after(alreadyDateEnd))
                 );
+    }
+
+    public static void resetMap() {
+        personBookingsMap.clear();
+        AccessSQLite accessSQLite = new AccessSQLite();
+        accessSQLite.getAllBookings();
     }
 
     public enum AuthAnswer {

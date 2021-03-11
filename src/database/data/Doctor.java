@@ -1,5 +1,7 @@
 package database.data;
 
+import database.AccessSQLite;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +16,12 @@ public class Doctor extends AbstractPerson {
         this.background = background;
         doctorIDMap.put(id, this);
         doctorStringMap.put(toString(), this);
+    }
+
+    public static void resetMap() {
+        doctorStringMap.clear(); doctorIDMap.clear();
+        AccessSQLite accessSQLite = new AccessSQLite();
+        accessSQLite.getAllDoctors();
     }
 
     public static Doctor getDoctorFromID(int id) {

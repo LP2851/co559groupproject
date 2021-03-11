@@ -323,7 +323,8 @@ public class GUI extends JFrame {
                                         p.getAllDetailsString() + "\nIf these values are not correct then try again.",
                                         DialogBox.MessageType.INFORMATION);
                                 patientNameComboBox.setText(p.toString());
-                                doctorNameComboBox.setSelectedItem(p.getDoctor().toString());
+                                if (p.getDoctor() != null)
+                                    doctorNameComboBox.setSelectedItem(p.getDoctor().toString());
                                 isValidValue = true;
                             } else {
                                 new DialogBox("Patient Doesn't Exist",
@@ -416,7 +417,8 @@ public class GUI extends JFrame {
                             break;
                         case AUTHORISED:
                             // TODO Show booking details in confirmation message and return to view bookings
-                            new DialogBox(b.toString());
+                            new DialogBox("New Booking Created:\n" + b.toString());
+                            accessSQLite.addBooking(startDTH, endDTH, b.getDoctor().getId(), b.getPatient().getId());
                             // TODO Send to booking to database
                             patientNameComboBox.setText(defaultPatientDetailsButtonText);
                             setActivePanel(viewBookingsPanel);

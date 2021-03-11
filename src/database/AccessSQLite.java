@@ -8,7 +8,7 @@ import database.datetime.DateTimeHandler;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
+
 
 /**
  * Class used to connect to and get data from the SQLite database.
@@ -27,6 +27,8 @@ public class AccessSQLite {
     private static final String NEW_DOCTOR = "insert into doctor (fname, sname, phone, background) values (?, ?, ?, ?) ;";
     private static final String CHECK_USERNAME_PASSWORD = "select fname, sname from administrator where username = ? and password = ?;";
     private static final String NEW_BOOKING = "insert into booking (start, end, doctor, patient) values (?, ?, ?, ?);";
+    private static final String NEW_PATIENT_WITH_DOCTOR = "insert into patient (nhsnumber, fname, sname, phone, doctor) values (?, ?, ?, ?, ?);";
+    private static final String NEW_PATIENT_WITHOUT_DOCTOR = "insert into patient (nhsnumber, fname, sname, phone) values (?, ?, ?, ?);";
     private static final String ALL_PATIENTS = "select * from patient;";
     private static final String ALL_DOCTORS = "select * from doctor;";
     private static final String DOCTOR_FROM_PATIENT = "select doctor.fname, doctor.sname from doctor, patient where patient.nhsnumber = ? and patient.doctor = doctor.did;";
@@ -136,6 +138,7 @@ public class AccessSQLite {
             preparedStatement.executeUpdate();
 
             connection.close();
+            Doctor.resetMap();
             return true;
 
         } catch (Exception e) {
@@ -147,32 +150,52 @@ public class AccessSQLite {
     /**
      * TODO Generate and run add patient command ( INSERT INTO (...) VALUES (...); )
      */
-    public void addPatient() {
+    public boolean addPatient(String nhsNumber, String fname, String sname, String phone, int doctor) {
+        // Needs Patient.resetMap();
+        try {
+            // Opening connection
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection(connectionURL);
+            preparedStatement = connection.prepareStatement((doctor != -1) ? NEW_PATIENT_WITH_DOCTOR : NEW_PATIENT_WITHOUT_DOCTOR);
+            // Adding values to statement- prevents SQL injection
+            preparedStatement.setString(1, nhsNumber);
+            preparedStatement.setString(2, fname);
+            preparedStatement.setString(3, sname);
+            preparedStatement.setString(4, phone);
+            if (doctor != -1)
+                preparedStatement.setInt(5, doctor);
 
+            preparedStatement.executeUpdate();
+            connection.close();
+            Patient.resetMap();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**
      * TODO Generate and run add booking command ( INSERT INTO (...) VALUES (...); )
      */
-    public boolean addBooking(Date start, Date end, int doctorID, int patientID) {
-        DateTimeHandler dStart = new DateTimeHandler(start);
-        DateTimeHandler dEnd = new DateTimeHandler(end);
+    public boolean addBooking(DateTimeHandler start, DateTimeHandler end, int doctorID, int patientID) {
         try {
             // Opening connection
             Class.forName("org.sqlite.JDBC");
             Connection connection = DriverManager.getConnection(connectionURL);
             preparedStatement = connection.prepareStatement(NEW_BOOKING);
             // Adding values to statement- prevents SQL injection
-            preparedStatement.setString(1, dStart.toString());
-            preparedStatement.setString(2, dEnd.toString());
+            preparedStatement.setString(1, start.toString());
+            preparedStatement.setString(2, end.toString());
             preparedStatement.setInt(3, doctorID);
             preparedStatement.setInt(4 , patientID);
 
             preparedStatement.executeUpdate();
 
             connection.close();
+            Booking.resetMap();
             return true;
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -217,7 +240,6 @@ public class AccessSQLite {
      * Returns the results from asking the database for all of the messages for the user.
      * @param username The user's username- to make they only get messages for them
      * @return The results from asking the database for all of the messages for the user.
-     * @throws SQLException Can happen when the query is executed.
      */
     public ArrayList<String> getUserMessages(String username)  {
         // List to store all user messages as strings
@@ -333,7 +355,6 @@ public class AccessSQLite {
                     resultSet.getInt("doctor")
                 ));
             }
-
             connection.close();
         } catch (Exception e) {
             e.printStackTrace();
