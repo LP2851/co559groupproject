@@ -5,7 +5,7 @@ import javax.swing.*;
 /**
  * Class to create Dialog boxes easily
  * @author Lucas
- * @version 0.1
+ * @version 0.2
  */
 public class DialogBox {
 
@@ -51,6 +51,12 @@ public class DialogBox {
         }
     }
 
+    /**
+     * Creates a dialog box for with a message and a text input field
+     * @param title Title of the dialog box
+     * @param message The message to be displayed in the dialog box.
+     * @return The text inputted by the user in the text field
+     */
     public static String createDialogBoxAndGetUserInput(String title, String message) {
         JFrame frame = new JFrame();
         return JOptionPane.showInputDialog(frame, message, title, JOptionPane.PLAIN_MESSAGE);

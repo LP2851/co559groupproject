@@ -6,7 +6,7 @@ import ui.GlobalUIVars;
 /**
  * The main class for start-up from the command line.
  * @author Lucas
- * @version 0.1.1
+ * @version 0.2
  */
 public class Main {
 
@@ -15,6 +15,7 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
+        // Getting all necessary data from the database.
         preLoadDataMaps();
         new GUI();
         if (GlobalUIVars.DEBUG)
@@ -22,6 +23,10 @@ public class Main {
 
     }
 
+    /**
+     * Gets all necessary data from the database.
+     * All doctors, patients and booking be added to their corresponding class maps.
+     */
     private static void preLoadDataMaps() {
         AccessSQLite accessSQLite = new AccessSQLite();
         accessSQLite.getAllDoctors();
