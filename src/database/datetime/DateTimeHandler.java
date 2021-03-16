@@ -152,13 +152,14 @@ public class DateTimeHandler {
         if (month == 1) {
             if (year % 4 == 0 && day > 29) {
                 return false;
-            } else if (day > 28) {
+            } else if (year % 4 != 0 && day > 28) {
                 return false;
             }
         // APR, JUN, SEPT, NOV = 30 days
         } else if (day == 31 && (month == 3 || month == 5 || month == 8 || month == 10)) {
             return false;
         }
-        return true;
+        return (day > 0 && day < 32 &&
+                month > -1 && month < 12);
     }
 }

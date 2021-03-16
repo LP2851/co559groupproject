@@ -1,5 +1,6 @@
 package database;
 
+import database.datetime.DateTimeHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test class for the AccessSQLite.
+ * @author Lucas
+ * @version 0.2
  */
 class AccessSQLiteTest {
 
@@ -55,6 +58,34 @@ class AccessSQLiteTest {
                     "PRIMARY KEY (mid AUTOINCREMENT) );"
         );
 
+        // Patient Table
+        accessSQLite.runUpdateCommand(
+                "CREATE TABLE patient (" +
+                        "pid INTEGER," +
+                        "nhsnumber VARCHAR(10) NOT NULL UNIQUE," +
+                        "fname TEXT NOT NULL," +
+                        "sname TEXT NOT NULL," +
+                        "phone VARCHAR(11)," +
+                        "doctor INTEGER," +
+                        "FOREIGN KEY (doctor) REFERENCES doctor (did)," +
+                        "PRIMARY KEY (pid AUTOINCREMENT) );"
+        );
+
+        // Bookings Table
+        accessSQLite.runUpdateCommand(
+                "CREATE TABLE booking (" +
+                        "bid INTEGER," +
+                        "startDateTime TEXT NOT NULL," +
+                        "endDateTime TEXT NOT NULL," +
+                        "doctor INTEGER NOT NULL," +
+                        "patient INTEGER NOT NULL," +
+                        "FOREIGN KEY (doctor) REFERENCES doctor (did)," +
+                        "FOREIGN KEY (patient) REFERENCES patient (pid)," +
+                        "UNIQUE (startDateTime, endDateTime, doctor)," +
+                        "PRIMARY KEY (bid AUTOINCREMENT), " +
+                        "UNIQUE (startDateTime, endDateTime, patient) );"
+        );
+
         // Populating the Database
         // Adding an administrator record
         accessSQLite.runUpdateCommand(
@@ -86,7 +117,21 @@ class AccessSQLiteTest {
                 "INSERT INTO messages (aid, message)" +
                     "VALUES (2, 'This message is the final test.');"
         );
-
+        // Adding doctor 1
+        accessSQLite.runUpdateCommand(
+                "INSERT INTO doctor (fname, sname, phone, background)" +
+                    "VALUES ('Test', 'Doc', '', '');"
+        );
+        // Adding patient 1
+        accessSQLite.runUpdateCommand(
+                "INSERT INTO patient (nhsnumber, fname, sname, phone, doctor) " +
+                        "VALUES ('9876543210', 'Test', 'Patient', '', 1);"
+        );
+        // Adding booking 1
+        accessSQLite.runUpdateCommand(
+                "INSERT INTO booking (startDateTime, endDateTime, doctor, patient)" +
+                        "VALUES ('2021-01-01 07:00:00.000', '2021-01-01 08:00:00.000', 1, 1);"
+        );
 
     }
 
@@ -117,9 +162,9 @@ class AccessSQLiteTest {
     }
 
     /**
-     * When a doctor is created, it successfully get added to the database.
+     * When a doctor is created, it successfully gets added to the database.
      * Creates the following doctor:
-     *  - aid       = SET BY DATABASE (should be 1)
+     *  - aid       = SET BY DATABASE (should be 2)
      *  - fname     = "Doctor"
      *  - sname     = "Test"
      *  - phone     = "01234567890"
@@ -129,15 +174,53 @@ class AccessSQLiteTest {
     void addDoctor() {
         assertTrue(accessSQLite.addDoctor("Doctor", "Test", "01234567890", "GP"));
     }
-    /*
+
+    /**
+     * When a patient is created (without a set doctor), it successfully gets added to the database.
+     * Creates the following patient:
+     *  - aid       = SET BY DATABASE (should be 2)
+     *  - nhsnumber = "0123456789"
+     *  - fname     = "Test"
+     *  - sname     = "Patient"
+     *  - phone     = ""
+     *  - doctor    = 0
+     */
     @Test
-    void addPatient() {
+    void addPatient1() {
+        assertTrue(accessSQLite.addPatient("0123456789", "Test", "Patient", "", 0));
     }
 
+    /**
+     * When a patient is created (with a set doctor), it successfully gets added to the database.
+     * Creates the following patient:
+     *  - aid       = SET BY DATABASE (should be 2)
+     *  - nhsnumber = "0123456789"
+     *  - fname     = "Test"
+     *  - sname     = "Patient"
+     *  - phone     = ""
+     *  - doctor    = 1
+     */
+    @Test
+    void addPatient2() {
+        assertTrue(accessSQLite.addPatient("0123456789", "Test", "Patient", "", 1));
+    }
+
+    /**
+     * When a booking is created, it successfully gets added to the database.
+     * Creates the following booking:
+     *  - bid           = SET BY DATABASE
+     *  - startDateTime = "2021-01-01 08:00:00.000"
+     *  - endDateTime   = "2021-01-01 08:00:00.000"
+     *  - patient       = 1
+     *  - doctor        = 1
+     */
     @Test
     void addBooking() {
+        DateTimeHandler start = new DateTimeHandler(2021, 1, 1, 8, 0);
+        DateTimeHandler end = new DateTimeHandler(2021, 1, 1, 9, 0);
+        assertTrue(accessSQLite.addBooking(start, end, 1, 1));
     }
-
+    /*
     @Test
     void viewBookings() {
     }
@@ -185,6 +268,31 @@ class AccessSQLiteTest {
     @Test
     void getUserMessages3() {
         assertTrue(accessSQLite.getUserMessages("tester4").isEmpty());
+    }
+
+    /**
+     * Testing getAllPatient() method returns correct values.
+     */
+    @Test
+    void getAllPatients() {
+        assertArrayEquals(new String[] {"Test Patient (9876543210)"}, accessSQLite.getAllPatients());
+    }
+
+    /**
+     * Testing getAllDoctors() method returns correct values.
+     */
+    @Test
+    void getAllDoctors() {
+        assertArrayEquals(new String[] {"Test Doc"}, accessSQLite.getAllDoctors());
+    }
+
+    /**
+     * Testing getAllBookings() method returns correct values.
+     */
+    @Test
+    void getAllBookings() {
+        assertNotNull(accessSQLite.getAllBookings());
+        assertEquals(1, accessSQLite.getAllBookings().size());
     }
 
     /**

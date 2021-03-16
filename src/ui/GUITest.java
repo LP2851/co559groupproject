@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Test class for the GUI class. Tests none GUI related methods like the validatePhoneNumber() method.
  * @author Lucas
- * @version 0.1
+ * @version 0.2
  */
 class GUITest {
 
@@ -74,5 +74,56 @@ class GUITest {
     void validatePhoneNumber5() {
         assertFalse(gui.validatePhoneNumber(hasNonNumeric));
     }
+
+    /**
+     * When a valid number is inputted, true is returned.
+     * A valid number is a number containing 10 numeric characters.
+     * An empty number is also excepted ana handled elsewhere in the program.
+     */
+    @Test
+    void validateNHSNumber1() {
+        assertTrue(gui.validateNHSNumber("0123456789"));
+    }
+
+    /**
+     * When a number that is too short is inputted, false is returned.
+     * A valid number is a number containing 10 numeric characters.
+     * An empty number is also excepted ana handled elsewhere in the program.
+     */
+    @Test
+    void validateNHSNumber2() {
+        assertFalse(gui.validateNHSNumber(tooShort));
+    }
+
+    /**
+     * When a number that is too long is inputted, false is returned.
+     * A valid number is a number containing 10 numeric characters.
+     * An empty number is also excepted ana handled elsewhere in the program.
+     */
+    @Test
+    void validateNHSNumber3() {
+        assertFalse(gui.validateNHSNumber(tooLong));
+    }
+
+    /**
+     * When a number that contains a non-numeric character is inputted, false is returned.
+     * A valid number is a number containing 10 numeric characters.
+     * An empty number is also excepted ana handled elsewhere in the program.
+     */
+    @Test
+    void validateNHSNumber4() {
+        assertFalse(gui.validateNHSNumber(hasNonNumeric));
+    }
+
+    /**
+     * When an empty string is inputted, true is returned.
+     * A valid number is a number containing 10 numeric characters.
+     * An empty number is also excepted ana handled elsewhere in the program.
+     */
+    @Test
+    void validateNHSNumber5() {
+        assertTrue(gui.validateNHSNumber(""));
+    }
+
 
 }

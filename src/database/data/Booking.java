@@ -81,7 +81,7 @@ public class Booking {
     /**
      * Adding the booking to the booking map for both the patient and the doctor.
      */
-    private void addToMap() {
+    protected void addToMap() {
         // Adds to the patient's map entry
         if(personBookingsMap.containsKey("p" + patient.getId())) {
             personBookingsMap.get("p" + patient.getId()).add(this);
