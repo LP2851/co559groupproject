@@ -257,12 +257,9 @@ public class Booking {
         Date tryDateEnd = tryBooking.getEndDateTimeAsDate();
         Date alreadyDateStart = alreadyBooking.getStartDateTimeAsDate();
         Date alreadyDateEnd = alreadyBooking.getEndDateTimeAsDate();
-        return (
-                ((tryDateStart.before(alreadyDateStart) && tryDateEnd.before(alreadyDateStart)) &&
-                !(tryDateStart.after(alreadyDateEnd) && tryDateEnd.after(alreadyDateEnd))) ||
-
-                !((tryDateStart.before(alreadyDateStart) && tryDateEnd.before(alreadyDateStart)) &&
-                (tryDateStart.after(alreadyDateEnd) && tryDateEnd.after(alreadyDateEnd)))
+        return !(
+                (tryDateStart.before(alreadyDateStart) && tryDateEnd.before(alreadyDateStart)) ||
+                (tryDateStart.after(alreadyDateEnd) && tryDateEnd.after(alreadyDateEnd))
                 );
     }
 
