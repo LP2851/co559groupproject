@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ui.GUI">
   <grid id="27dc6" binding="framePanel" layout-manager="CardLayout" hgap="0" vgap="0" show="58279">
     <constraints>
-      <xy x="424" y="122" width="729" height="369"/>
+      <xy x="424" y="122" width="729" height="393"/>
     </constraints>
     <properties>
       <maximumSize width="2147483647" height="2147483647"/>
@@ -180,6 +180,7 @@
               <gridbag weightx="0.0" weighty="0.0" ipady="100"/>
             </constraints>
             <properties>
+              <enabled value="false"/>
               <maximumSize width="120" height="30"/>
               <minimumSize width="120" height="30"/>
               <preferredSize width="120" height="30"/>
@@ -206,6 +207,7 @@
               <gridbag weightx="0.0" weighty="0.0" ipady="100"/>
             </constraints>
             <properties>
+              <enabled value="false"/>
               <maximumSize width="120" height="30"/>
               <minimumSize width="120" height="30"/>
               <preferredSize width="120" height="30"/>
@@ -413,7 +415,7 @@
           </component>
         </children>
       </grid>
-      <grid id="8b3aa" binding="viewBookingsPanel" layout-manager="GridLayoutManager" row-count="6" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="8b3aa" binding="viewBookingsPanel" layout-manager="GridLayoutManager" row-count="12" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <card name="Card1"/>
@@ -440,20 +442,25 @@
           </component>
           <scrollpane id="c251e">
             <constraints>
-              <grid row="1" column="0" row-span="5" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="0" row-span="11" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="32c3d" class="javax.swing.JTable" binding="table1" default-binding="true">
+              <component id="32c3d" class="javax.swing.JTable" binding="bookingsTable">
                 <constraints/>
-                <properties/>
+                <properties>
+                  <autoCreateRowSorter value="true"/>
+                  <cellSelectionEnabled value="false"/>
+                  <columnSelectionAllowed value="false"/>
+                  <enabled value="false"/>
+                </properties>
               </component>
             </children>
           </scrollpane>
           <vspacer id="99f4a">
             <constraints>
-              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <grid row="11" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
             </constraints>
           </vspacer>
           <component id="20fb4" class="javax.swing.JButton" binding="enterNewBookingButton" default-binding="true">
@@ -466,10 +473,11 @@
           </component>
           <component id="875d7" class="javax.swing.JLabel">
             <constraints>
-              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Stuff here for sorting"/>
+              <font style="1"/>
+              <text value="Filter Settings:"/>
             </properties>
           </component>
           <component id="df8d1" class="javax.swing.JButton" binding="rescheduleBookingButton" default-binding="true">
@@ -477,7 +485,79 @@
               <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <enabled value="false"/>
               <text value="Reschedule Booking"/>
+            </properties>
+          </component>
+          <component id="a820" class="javax.swing.JButton" binding="filterDoctorButton">
+            <constraints>
+              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Click to Select Doctor"/>
+              <toolTipText value="Filter By Doctor"/>
+            </properties>
+          </component>
+          <component id="af656" class="javax.swing.JButton" binding="filterPatientButton">
+            <constraints>
+              <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Click to Select Patient"/>
+              <toolTipText value="Filter By Patient"/>
+            </properties>
+          </component>
+          <grid id="2f1e0" layout-manager="GridBagLayout">
+            <constraints>
+              <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <hspacer id="f9dcf">
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+              </hspacer>
+              <component id="4b02" class="javax.swing.JComboBox" binding="viewMonthCombo">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="f3b79" class="javax.swing.JComboBox" binding="viewYearCombo">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties/>
+              </component>
+            </children>
+          </grid>
+          <component id="2b674" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Month -- Year"/>
+            </properties>
+          </component>
+          <component id="9b71b" class="javax.swing.JButton" binding="clearSearchButton">
+            <constraints>
+              <grid row="10" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Clear Filter Settings"/>
+            </properties>
+          </component>
+          <component id="3fd44" class="javax.swing.JButton" binding="searchButton">
+            <constraints>
+              <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Filter Using These Settings"/>
             </properties>
           </component>
         </children>

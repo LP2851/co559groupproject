@@ -87,4 +87,7 @@ public class Doctor extends AbstractPerson {
                 ((background.isEmpty()) ? "" : " (" + background + ")");
     }
 
+    public static Doctor[] getAllDoctors() {
+        return doctorIDMap.values().toArray(new Doctor[0]);
+    }
 }

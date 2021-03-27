@@ -137,4 +137,8 @@ public class Patient extends AbstractPerson {
                 "Usual Doctor: " + doctor;
     }
 
+    public static Patient[] getAllPatients() {
+        return patientIDMap.values().toArray(new Patient[0]);
+    }
+
 }

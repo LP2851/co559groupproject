@@ -1,12 +1,14 @@
 package ui;
 
 import database.AccessSQLite;
+import database.data.AbstractPerson;
 import database.data.Booking;
 import database.data.Doctor;
 import database.data.Patient;
 import database.datetime.DateTimeHandler;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -39,7 +41,7 @@ public class GUI extends JFrame {
     private JTextField doctorBackgroundField;
     private JPanel viewBookingsPanel;
     private JButton backFromViewBookingsButton;
-    private JTable table1;
+    private JTable bookingsTable;
     private JButton enterNewBookingButton;
     private JPanel enterNewBookingPanel;
     private JButton goBackToViewBookings;
@@ -55,6 +57,12 @@ public class GUI extends JFrame {
     private JComboBox<Integer> endHourInput;
     private JComboBox<String> endMinInput;
     private JButton rescheduleBookingButton;
+    private JButton filterDoctorButton;
+    private JButton filterPatientButton;
+    private JComboBox<String> viewMonthCombo;
+    private JButton searchButton;
+    private JButton clearSearchButton;
+    private JComboBox<Integer> viewYearCombo;
 
     // Values to store the user's name and also user's username
     private String activeUsersName;
@@ -71,6 +79,11 @@ public class GUI extends JFrame {
 
     // Default text for the patients button
     private static final String defaultPatientDetailsButtonText = "Click to Enter Patient Details";
+
+    private static AbstractPerson doctorFilter, patientFilter;
+    private static boolean filteringDateTime = false;
+    private static final String defaultDoctorFilterString = "Click to Select Doctor";
+    private static final String defaultPatientFilterString = "Click to Select Patient";
 
     /**
      * Constructor for the GUI class. Sets up frame for login screen.
@@ -139,6 +152,7 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 GlobalUIVars.debug("Opening bookings page");
                 setActivePanel(viewBookingsPanel);
+                initViewBookingComponents();
             }
         });
 
@@ -261,27 +275,13 @@ public class GUI extends JFrame {
             }
         });
 
-        // Enter New Bookings Page- Create New Booking
-        enterBookingButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO Do checks and then add booking
-                // Check booking is valid and doesn't clash with doctor's other appointments
-                    // Show doctor's appointments on the day chosen if there is a clash.
-                    // And create dialog box.
-                // Check booking is valid and doesn't clash with patient's other appointments
-                    // Show patient's appointments on the day chosen if there is a clash.
-                    // And create dialog box.
-                // If succeeds then the booking is added.
-            }
-        });
-
         // Enter New Bookings Page- Go Back to View Bookings Screen
         goBackToViewBookings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 patientNameComboBox.setText(defaultPatientDetailsButtonText);
                 setActivePanel(viewBookingsPanel);
+                initViewBookingComponents();
             }
         });
 
@@ -314,7 +314,11 @@ public class GUI extends JFrame {
                             "Please Enter the 10 digit NHS Number of the Patient:\nIf you want to exit this screen then do not enter anything in the text field and press ok.")
                             .strip();
                     // If empty, then resets the button and leaves the Dialog box loop.
-                    if (result.isEmpty()) {
+                    if (result == null) {
+                        // Do nothing
+                        if (GlobalUIVars.DEBUG)
+                            System.out.println("Stopped entering patient details.");
+                    } else if (result.isEmpty()) {
                         patientNameComboBox.setText(defaultPatientDetailsButtonText);
                         isValidValue = true;
                     } else {
@@ -440,6 +444,7 @@ public class GUI extends JFrame {
                                 new DialogBox("New Booking Created:\n" + b.toString());
                                 patientNameComboBox.setText(defaultPatientDetailsButtonText);
                                 setActivePanel(viewBookingsPanel);
+                                initViewBookingComponents();
                             } else {
                                 // Failed to add to database
                                 new DialogBox("Database Error", "An unknown database error occurred.\nPlease try again.", DialogBox.MessageType.ERROR);
@@ -449,6 +454,59 @@ public class GUI extends JFrame {
                 }
             }
         });
+
+        // View Bookings Page- Filter By Doctor Button
+        filterDoctorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doctorFilter = (Doctor) DialogBox.createDialogBoxAndGetUserInput(
+                        "Filter By Doctor",
+                        "Filtering by the doctor:\nPress the Cancel button to clear selection.",
+                        Doctor.getAllDoctors(),
+                        (filterDoctorButton.getText().equals(defaultDoctorFilterString)) ? null : filterDoctorButton.getText()
+                );
+                if(doctorFilter != null)
+                    filterDoctorButton.setText(doctorFilter.toString());
+                else
+                    filterDoctorButton.setText(defaultDoctorFilterString);
+            }
+        });
+
+        // View Bookings Page- Filter by Patient Button
+        filterPatientButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                patientFilter = (Patient) DialogBox.createDialogBoxAndGetUserInput(
+                        "Filter By Patient",
+                        "Filtering by the patient:\nPress the Cancel button to clear selection.",
+                        Patient.getAllPatients(),
+                        (filterPatientButton.getText().equals(defaultPatientFilterString)) ? null : filterPatientButton.getText()
+                );
+                if(patientFilter != null)
+                    filterPatientButton.setText(patientFilter.toString());
+                else
+                    filterPatientButton.setText(defaultPatientFilterString);
+            }
+        });
+
+        // View Bookings- Search Button
+        searchButton.addActionListener(e -> updateBookingsTable(true));
+
+        // View Bookings- Clear Button
+        clearSearchButton.addActionListener(e -> initViewBookingComponents());
+        viewMonthCombo.addActionListener(e -> {
+            filteringDateTime = true;
+            if (viewYearCombo.getSelectedItem() == null) {
+                viewYearCombo.setSelectedItem(2021);
+            }
+        });
+        viewYearCombo.addActionListener(e -> {
+            filteringDateTime = true;
+            if (viewMonthCombo.getSelectedItem() == null) {
+                viewMonthCombo.setSelectedItem("JAN");
+            }
+        });
+
     }
 
     /**
@@ -491,11 +549,10 @@ public class GUI extends JFrame {
         }
 
         // If numeric and length of number is 11 characters then number is valid
+        // Wrong length then invalid number
         if(phoneNo.length() == 11) return true;
         // If number is empty (this is allowed) then number is valid
-        else if(phoneNo.isEmpty()) return true;
-        // Wrong length then invalid number
-        else return false;
+        else return phoneNo.isEmpty();
     }
 
     /**
@@ -515,11 +572,10 @@ public class GUI extends JFrame {
         }
 
         // If numeric and length of number is 10 characters then number is valid
+        // Wrong length then invalid number
         if(nhsNumber.length() == 10) return true;
-            // If number is empty (this is allowed) then number is valid
-        else if(nhsNumber.isEmpty()) return true;
-            // Wrong length then invalid number
-        else return false;
+        // If number is empty (this is allowed) then number is valid
+        else return nhsNumber.isEmpty();
     }
 
     /**
@@ -571,14 +627,17 @@ public class GUI extends JFrame {
         endMinInput.removeAllItems();
         dayComboBox.removeAllItems();
 
+
         // Adding values to the combo boxes
 
         for (int i = 1; i < 32; i++)
             dayComboBox.addItem(i);
         for (int i = 1; i < 6; i++)
             yearSpinner.addItem(i + 2020);
+
         for (String m : MONTHS)
             monthSpinner.addItem(m);
+
 
         // Setting the pre-selected date to be the day.
         dayComboBox.setSelectedItem(DateTimeHandler.getNow().getDate());
@@ -594,10 +653,77 @@ public class GUI extends JFrame {
             endMinInput.addItem((m == 0) ? "00" : "" + m);
         }
 
-
         for (String d : doctors)
             doctorNameComboBox.addItem(d);
 
     }
+
+    private void initViewBookingComponents() {
+        viewMonthCombo.removeAllItems();
+        viewYearCombo.removeAllItems();
+
+        for (int i = 1; i < 6; i++)
+            viewYearCombo.addItem(i + 2020);
+
+        for (String m : MONTHS)
+            viewMonthCombo.addItem(m);
+
+        filterDoctorButton.setText(defaultDoctorFilterString);
+        filterPatientButton.setText(defaultPatientFilterString);
+        doctorFilter = null;
+        patientFilter = null;
+        filteringDateTime = false;
+
+        updateBookingsTable(false);
+    }
+
+    private void updateBookingsTable(boolean filtered) {
+        DefaultTableModel model = (DefaultTableModel) bookingsTable.getModel();
+
+        if (model.getColumnCount() == 0) {
+            model.addColumn("Date");
+            model.addColumn("Start Time");
+            model.addColumn("End Time");
+            model.addColumn("Patient");
+            model.addColumn("Doctor");
+        }
+
+        Booking[] allBookings = accessSQLite.getAllBookings().toArray(new Booking[0]);
+
+        model.setRowCount(0);
+        model.fireTableDataChanged();
+
+        for(Booking b : allBookings) {
+            if (!filtered || passesFilter(b)) {
+                String date = b.getStartDateTime().toString().split(" ")[0];
+                String start = b.getStartDateTime().toString().split(" ")[1];
+                String end = b.getEndDateTime().toString().split(" ")[1];
+
+                model.addRow(new Object[] {
+                        date,
+                        start,
+                        end,
+                        b.getPatient(),
+                        b.getDoctor()
+                });
+            }
+        }
+        model.fireTableDataChanged();
+    }
+
+    protected boolean passesFilter(Booking b) {
+        if (patientFilter != null && b.getPatient().getId() != patientFilter.getId()) {
+            return false;
+        } else if (doctorFilter != null && b.getDoctor().getId() != doctorFilter.getId()) {
+            return false;
+        } else if (filteringDateTime && b.getStartDateTime().getDate().getMonth() != viewMonthCombo.getSelectedIndex()) {
+            return false;
+        } else if (filteringDateTime && b.getStartDateTime().getDate().getYear() + 1900 != (int) viewYearCombo.getSelectedItem()){
+            return false;
+        }
+        return true;
+    }
+
+
 
 }

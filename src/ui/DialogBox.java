@@ -1,5 +1,7 @@
 package ui;
 
+import database.data.AbstractPerson;
+
 import javax.swing.*;
 
 /**
@@ -60,6 +62,11 @@ public class DialogBox {
     public static String createDialogBoxAndGetUserInput(String title, String message) {
         JFrame frame = new JFrame();
         return JOptionPane.showInputDialog(frame, message, title, JOptionPane.PLAIN_MESSAGE);
+    }
+
+    public static AbstractPerson createDialogBoxAndGetUserInput(String title, String message, AbstractPerson[] people, String selection) {
+        JFrame frame = new JFrame();
+        return (AbstractPerson) JOptionPane.showInputDialog(frame, message, title, JOptionPane.PLAIN_MESSAGE, null, people, selection);
     }
 
     /**
