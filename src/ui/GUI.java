@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 /**
  * The GUI that is used for the program.
  * @author Lucas
- * @version 0.2
+ * @version 0.3
  */
 public class GUI extends JFrame {
     // Named components that can be in the window.
