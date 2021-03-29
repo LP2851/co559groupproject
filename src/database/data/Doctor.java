@@ -8,15 +8,15 @@ import java.util.Map;
 /**
  * Class for the doctor objects
  * @author Lucas
- * @version 0.2
+ * @version 0.3
  */
 public class Doctor extends AbstractPerson {
 
     // Background string for the doctor
     private String background;
     // Maps for the doctors to the strings and ID.
-    private static Map<Integer, Doctor> doctorIDMap = new HashMap<>();
-    private static Map<String, Doctor> doctorStringMap = new HashMap<>();
+    protected static Map<Integer, Doctor> doctorIDMap = new HashMap<>();
+    protected static Map<String, Doctor> doctorStringMap = new HashMap<>();
 
     /**
      * Constructor for the Doctor class
@@ -87,6 +87,10 @@ public class Doctor extends AbstractPerson {
                 ((background.isEmpty()) ? "" : " (" + background + ")");
     }
 
+    /**
+     * Returns all of the stored doctors in the system.
+     * @return All of the stored doctors in the system.
+     */
     public static Doctor[] getAllDoctors() {
         return doctorIDMap.values().toArray(new Doctor[0]);
     }

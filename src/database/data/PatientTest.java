@@ -3,13 +3,13 @@ package database.data;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
  * Tests the Patient class
  * @author Lucas
- * @version 0.2
+ * @version 0.3
  */
 class PatientTest {
     // Testing objects
@@ -117,5 +117,14 @@ class PatientTest {
                         "Patient Phone Number: " + "" + "\n" +
                         "Usual Doctor: " + d1.toString();
         assertEquals(test, p2.getAllDetailsString());
+    }
+
+    /**
+     * Checks that the patients added are the only things in the return from getAllPatients()
+     * in the order they were added.
+     */
+    @Test
+    void getAllPatients() {
+        assertArrayEquals(new Patient[] {p1, p2}, Patient.getAllPatients());
     }
 }

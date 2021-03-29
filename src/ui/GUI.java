@@ -80,8 +80,8 @@ public class GUI extends JFrame {
     // Default text for the patients button
     private static final String defaultPatientDetailsButtonText = "Click to Enter Patient Details";
 
-    private static AbstractPerson doctorFilter, patientFilter;
-    private static boolean filteringDateTime = false;
+    protected AbstractPerson doctorFilter, patientFilter;
+    protected boolean filteringDateTime = false;
     private static final String defaultDoctorFilterString = "Click to Select Doctor";
     private static final String defaultPatientFilterString = "Click to Select Patient";
 
@@ -156,33 +156,13 @@ public class GUI extends JFrame {
             }
         });
 
-        // Welcome Page- Patient Details Button Pressed
-        patientDetailsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GlobalUIVars.debug("Opening patient details page");
-                // TODO Go to patient details page
-            }
-        });
-
         // Welcome Page- Add New Doctor Button Pressed
         addNewDoctorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 GlobalUIVars.debug("Opening new doctor page");
                 // Change to enter new doctor window
                 setActivePanel(enterNewDocPanel);
-
-            }
-        });
-
-        // Welcome Page- Add New Patient Button Pressed
-        addNewPatientButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GlobalUIVars.debug("Opening new patient page");
-                // TODO Go to new patient page
             }
         });
 
@@ -228,6 +208,7 @@ public class GUI extends JFrame {
                     background = doctorBackgroundField.getText().strip();
 
                     if (accessSQLite.addDoctor(fname, sname, phone, background)) {
+
                         GlobalUIVars.debug("Returning to Welcome Page");
 
                         // Dialog box telling you that the doctor has successfully been added
@@ -245,6 +226,16 @@ public class GUI extends JFrame {
                         // Change back to welcome screen
                         setActivePanel(welcomePanel);
 
+                        // Resetting. Getting all data from the database.
+                        Doctor.resetMap();
+                        // Getting doctor added with list.
+                        Doctor[] allDoctors = Doctor.getAllDoctors();
+                        // Constructing message.
+                        String message =
+                                DateTimeHandler.getNow().toString() +
+                                " :: You have been added to the system!";
+                        accessSQLite.sendConfirmationMessages(allDoctors[allDoctors.length-1], message);
+
                     } else {
                         // Show error message if something goes wrong when adding new doctor to the database
                         new DialogBox(
@@ -252,8 +243,6 @@ public class GUI extends JFrame {
                                 "An unknown database error occurred.\nPlease try again.",
                                 DialogBox.MessageType.ERROR);
                     }
-
-
                 }
             }
         });
@@ -282,18 +271,6 @@ public class GUI extends JFrame {
                 patientNameComboBox.setText(defaultPatientDetailsButtonText);
                 setActivePanel(viewBookingsPanel);
                 initViewBookingComponents();
-            }
-        });
-
-        // Enter New Bookings Page- When the user selects a patient it should update the doctor field with
-        // their usual doctor if they have one.
-        patientNameComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO Get user details and check for usual doctor
-                // String patientNHS = patientNameComboBox.getSelectedItem().toString();
-                // getPatientDetails
-                // DialogBox showing patient details
             }
         });
 
@@ -445,6 +422,28 @@ public class GUI extends JFrame {
                                 patientNameComboBox.setText(defaultPatientDetailsButtonText);
                                 setActivePanel(viewBookingsPanel);
                                 initViewBookingComponents();
+
+                                // Resetting. Getting all data from database.
+                                Booking.resetMap();
+                                // Getting doctor added with list.
+                                // Constructing messages for doctor and patient.
+                                String messageDoctor = String.format(
+                                        "%s :: You have a new booking for %s until %s with %s.",
+                                        DateTimeHandler.getNow().toString(),
+                                        startDTH.toString(),
+                                        endDTH.toString(),
+                                        b.getPatient().toString());
+
+                                String messagePatient = String.format(
+                                        "%s :: You have a new booking for %s until %s with %s. " +
+                                                "If this is incorrect please contact us.",
+                                        DateTimeHandler.getNow().toString(),
+                                        startDTH.toString(),
+                                        endDTH.toString(),
+                                        b.getDoctor().toString());
+                                // Sending messages.
+                                accessSQLite.sendConfirmationMessages(b, messageDoctor, messagePatient);
+
                             } else {
                                 // Failed to add to database
                                 new DialogBox("Database Error", "An unknown database error occurred.\nPlease try again.", DialogBox.MessageType.ERROR);
@@ -476,32 +475,44 @@ public class GUI extends JFrame {
         filterPatientButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Getting the patient chosen by the user
                 patientFilter = (Patient) DialogBox.createDialogBoxAndGetUserInput(
                         "Filter By Patient",
                         "Filtering by the patient:\nPress the Cancel button to clear selection.",
                         Patient.getAllPatients(),
                         (filterPatientButton.getText().equals(defaultPatientFilterString)) ? null : filterPatientButton.getText()
                 );
+                // If patient not chosen then set text to default (clearing the patient part of the filter)
                 if(patientFilter != null)
                     filterPatientButton.setText(patientFilter.toString());
+                // Setting the text of the patient button to be the chosen patient.
                 else
                     filterPatientButton.setText(defaultPatientFilterString);
             }
         });
 
         // View Bookings- Search Button
+        // Filters the table
         searchButton.addActionListener(e -> updateBookingsTable(true));
 
         // View Bookings- Clear Button
         clearSearchButton.addActionListener(e -> initViewBookingComponents());
+
+        // View Bookings- Month Filter
         viewMonthCombo.addActionListener(e -> {
+            // Makes sure the date and time are being used as a filter.
             filteringDateTime = true;
+            // Stopping errors
             if (viewYearCombo.getSelectedItem() == null) {
                 viewYearCombo.setSelectedItem(2021);
             }
         });
+
+        // View Bookings- Year Filter
         viewYearCombo.addActionListener(e -> {
+            // Makes sure the date and time are being used as a filter.
             filteringDateTime = true;
+            // Stopping errors
             if (viewMonthCombo.getSelectedItem() == null) {
                 viewMonthCombo.setSelectedItem("JAN");
             }
@@ -627,14 +638,11 @@ public class GUI extends JFrame {
         endMinInput.removeAllItems();
         dayComboBox.removeAllItems();
 
-
         // Adding values to the combo boxes
-
         for (int i = 1; i < 32; i++)
             dayComboBox.addItem(i);
         for (int i = 1; i < 6; i++)
             yearSpinner.addItem(i + 2020);
-
         for (String m : MONTHS)
             monthSpinner.addItem(m);
 
@@ -652,34 +660,45 @@ public class GUI extends JFrame {
             startMinInput.addItem((m == 0) ? "00" :"" + m);
             endMinInput.addItem((m == 0) ? "00" : "" + m);
         }
-
         for (String d : doctors)
             doctorNameComboBox.addItem(d);
-
     }
 
+    /**
+     * Initialises all of the components for the view bookings screen.
+     */
     private void initViewBookingComponents() {
+        // Clearing the combo boxes
         viewMonthCombo.removeAllItems();
         viewYearCombo.removeAllItems();
 
+        // Adding to the combo boxes
         for (int i = 1; i < 6; i++)
             viewYearCombo.addItem(i + 2020);
-
         for (String m : MONTHS)
             viewMonthCombo.addItem(m);
 
+        // Setting the text in the doctor/patient filter buttons.
         filterDoctorButton.setText(defaultDoctorFilterString);
         filterPatientButton.setText(defaultPatientFilterString);
+        // Turning filters off
         doctorFilter = null;
         patientFilter = null;
         filteringDateTime = false;
 
+        // Updating the table contents
         updateBookingsTable(false);
     }
 
+    /**
+     * Updates the bookings table contents.
+     * @param filtered Is the table being filtered.
+     */
     private void updateBookingsTable(boolean filtered) {
+        // Getting the table model data.
         DefaultTableModel model = (DefaultTableModel) bookingsTable.getModel();
 
+        // For the first time.
         if (model.getColumnCount() == 0) {
             model.addColumn("Date");
             model.addColumn("Start Time");
@@ -688,42 +707,53 @@ public class GUI extends JFrame {
             model.addColumn("Doctor");
         }
 
+        // Getting all of the bookings from the database.
         Booking[] allBookings = accessSQLite.getAllBookings().toArray(new Booking[0]);
 
+        // Clearing data already in table.
         model.setRowCount(0);
-        model.fireTableDataChanged();
 
+        // Adding bookings to table
         for(Booking b : allBookings) {
+            // Adds to the table if not filtering
+            // Or it is filtering and the booking fits the filter requirements.
             if (!filtered || passesFilter(b)) {
                 String date = b.getStartDateTime().toString().split(" ")[0];
                 String start = b.getStartDateTime().toString().split(" ")[1];
                 String end = b.getEndDateTime().toString().split(" ")[1];
 
-                model.addRow(new Object[] {
+                // Adding data to table.
+                model.addRow(new String[] {
                         date,
                         start,
                         end,
-                        b.getPatient(),
-                        b.getDoctor()
+                        b.getPatient().toString(),
+                        b.getDoctor().toString()
                 });
             }
         }
-        model.fireTableDataChanged();
     }
 
+    /**
+     * Returns if the booking passed fits the filter the user has selected.
+     * @param b The booking to be tested.
+     * @return True if the booking meets the filter requirements, otherwise false.
+     */
     protected boolean passesFilter(Booking b) {
-        if (patientFilter != null && b.getPatient().getId() != patientFilter.getId()) {
+        // Is the patient filter has been set and the patient is the same
+        if (patientFilter != null && b.getPatient().getId() != patientFilter.getId())
             return false;
-        } else if (doctorFilter != null && b.getDoctor().getId() != doctorFilter.getId()) {
+        // Is the doctor filter has been set and the doctor is the same
+        else if (doctorFilter != null && b.getDoctor().getId() != doctorFilter.getId())
             return false;
-        } else if (filteringDateTime && b.getStartDateTime().getDate().getMonth() != viewMonthCombo.getSelectedIndex()) {
+        // Is the date/time being used as a filter and is the month the same
+        else if (filteringDateTime && b.getStartDateTime().getDate().getMonth() != viewMonthCombo.getSelectedIndex())
             return false;
-        } else if (filteringDateTime && b.getStartDateTime().getDate().getYear() + 1900 != (int) viewYearCombo.getSelectedItem()){
+        // Is the date/time being used as a filter and is the year the same
+        else if (filteringDateTime && b.getStartDateTime().getDate().getYear() + 1900 != (int) viewYearCombo.getSelectedItem())
             return false;
-        }
-        return true;
+        // If successfully avoids failing any of the above then the booking passes the filter
+        else
+            return true;
     }
-
-
-
 }

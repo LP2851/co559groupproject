@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Class of the Patient. Extends AbstractPerson.
  * @author Lucas
- * @version 0.2
+ * @version 0.3
  */
 public class Patient extends AbstractPerson {
 
@@ -137,6 +137,10 @@ public class Patient extends AbstractPerson {
                 "Usual Doctor: " + doctor;
     }
 
+    /**
+     * Returns all of the patients in the system.
+     * @return All of the patients in the system.
+     */
     public static Patient[] getAllPatients() {
         return patientIDMap.values().toArray(new Patient[0]);
     }

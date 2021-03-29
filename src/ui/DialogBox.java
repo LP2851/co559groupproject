@@ -7,7 +7,7 @@ import javax.swing.*;
 /**
  * Class to create Dialog boxes easily
  * @author Lucas
- * @version 0.2
+ * @version 0.3
  */
 public class DialogBox {
 
@@ -64,6 +64,14 @@ public class DialogBox {
         return JOptionPane.showInputDialog(frame, message, title, JOptionPane.PLAIN_MESSAGE);
     }
 
+    /**
+     * Creats a dialog box with a message and a drop down list to choose from.
+     * @param title Title of the dialog box.
+     * @param message The message to be displayed in the dialog box.
+     * @param people The options for the dropdown list in the dialog box.
+     * @param selection Pre-selected option for the dropdown list.
+     * @return The person chosen by the user (one from the passed people list) or null if nothing selected.
+     */
     public static AbstractPerson createDialogBoxAndGetUserInput(String title, String message, AbstractPerson[] people, String selection) {
         JFrame frame = new JFrame();
         return (AbstractPerson) JOptionPane.showInputDialog(frame, message, title, JOptionPane.PLAIN_MESSAGE, null, people, selection);

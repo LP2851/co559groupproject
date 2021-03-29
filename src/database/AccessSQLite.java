@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Class used to connect to and get data from the SQLite database.
  * @author Lucas
- * @version 0.2
+ * @version 0.3
  */
 public class AccessSQLite {
     // Variables used for database access
@@ -32,6 +32,9 @@ public class AccessSQLite {
     private static final String ALL_PATIENTS = "select * from patient;";
     private static final String ALL_DOCTORS = "select * from doctor;";
     private static final String ALL_BOOKINGS = "select * from booking;";
+
+    private static final String SEND_CONF_MESSAGE_PATIENT = "insert into messagesPatient (pid, message) values (?, ?);";
+    private static final String SEND_CONF_MESSAGE_DOCTOR = "insert into messagesDoctor (did, message) values (?, ?);";
 
     /**
      * Empty constructor for the AccessMySQL class
@@ -217,39 +220,6 @@ public class AccessSQLite {
     }
 
     /**
-     * TODO Generate and run view bookings command ( SELECT ... FROM booking WHERE ... SORT BY ...)
-     */
-    public void viewBookings() {
-
-    }
-
-    /**
-     * TODO Generate and run update booking command
-     */
-    public void updateBooking() {
-
-    }
-
-    /**
-     * TODO Generate and run update patient details command
-     */
-    public void updatePatient() {
-
-    }
-
-    /**
-     * TODO Generate and run delete booking command
-     */
-    public void removeBooking() {
-
-    }
-
-    /**
-     * TODO Some form of log that can be checked.
-     */
-    private void logAccess(String username) {}
-
-    /**
      * Returns the results from asking the database for all of the messages for the user.
      * @param username The user's username- to make they only get messages for them
      * @return The results from asking the database for all of the messages for the user.
@@ -386,5 +356,43 @@ public class AccessSQLite {
         }
         return bookings;
     }
+
+    /**
+     * Sends confirmation message to the the person that is passed.
+     * @param person The person the message is for.
+     * @param message The message to be sent to the person.
+     * @return True if the message was sent successfully, false otherwise.
+     */
+    public boolean sendConfirmationMessages(AbstractPerson person, String message) {
+        try {
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection(connectionURL);
+
+            preparedStatement = connection.prepareStatement((person instanceof Doctor) ? SEND_CONF_MESSAGE_DOCTOR: SEND_CONF_MESSAGE_PATIENT);
+
+            preparedStatement.setInt(1, person.getId());
+            preparedStatement.setString(2, message);
+
+            preparedStatement.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Sends confirmation messages to the people involved in the booking.
+     * Returns true if the messages were sent, otherwise returns false.
+     * @param booking The booking that the confirmation message is about.
+     * @param messageDoctor The message to be sent to the doctor.
+     * @param messagePatient The message to be sent to the patient.
+     * @return True if the messages were sent successfully, otherwise false.
+     */
+    public boolean sendConfirmationMessages(Booking booking, String messageDoctor, String messagePatient) {
+        return sendConfirmationMessages(booking.getDoctor(), messageDoctor) && sendConfirmationMessages(booking.getPatient(), messagePatient);
+    }
+
 
 }
