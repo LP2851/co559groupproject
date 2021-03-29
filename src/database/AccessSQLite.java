@@ -14,6 +14,7 @@ import java.util.ArrayList;
  * Class used to connect to and get data from the SQLite database.
  * @author Lucas
  * @version 0.3
+ * @version 0.3
  */
 public class AccessSQLite {
     // Variables used for database access
@@ -252,6 +253,34 @@ public class AccessSQLite {
         return messages;
     }
 
+    public String[] getUserMessages(AbstractPerson p) {
+        // List to store all user messages as strings
+        ArrayList<String> messages = new ArrayList<>();
+        try {
+            // Opening connection
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection(connectionURL);
+
+            // Cannot use prepared statement here as broke some of the syntax
+            Statement statement = connection.createStatement();
+
+            if (p instanceof Patient)
+                resultSet = statement.executeQuery("select message from messagesPatient where pid = " + p.getId() +";");
+            else
+                resultSet = statement.executeQuery("select message from messagesDoctor where did = " + p.getId() +";");
+
+            // Moving returned messages into arraylist to be returned
+            while(resultSet.next()) {
+                messages.add(resultSet.getString("message"));
+            }
+
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return messages.toArray(new String[0]);
+    }
+
     /**
      * Returns an array of patient names.
      * @return An array of patient names from the database
@@ -374,6 +403,8 @@ public class AccessSQLite {
             preparedStatement.setString(2, message);
 
             preparedStatement.executeUpdate();
+
+            connection.close();
 
         } catch (Exception e) {
             e.printStackTrace();
