@@ -603,7 +603,7 @@
                   <text value="Patient NHS Number:"/>
                 </properties>
               </component>
-              <component id="ff89c" class="javax.swing.JButton" binding="patientNameComboBox">
+              <component id="ff89c" class="javax.swing.JButton" binding="nhsNumberButton">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="0.0" weighty="0.0"/>
@@ -678,11 +678,11 @@
                       <model/>
                     </properties>
                   </component>
-                  <component id="9e204" class="javax.swing.JComboBox" binding="yearSpinner">
+                  <component id="9e204" class="javax.swing.JComboBox" binding="yearComboBox">
                     <constraints border-constraint="East"/>
                     <properties/>
                   </component>
-                  <component id="66c66" class="javax.swing.JComboBox" binding="monthSpinner">
+                  <component id="66c66" class="javax.swing.JComboBox" binding="monthComboBox">
                     <constraints border-constraint="Center"/>
                     <properties/>
                   </component>
