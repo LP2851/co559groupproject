@@ -618,10 +618,10 @@ public class GUI extends JFrame {
         // Creating DateTimeHandlers for the start and end points inputted
         DateTimeHandler startDTH = getDateTimeHandlerFor(day, month, year,
                 (int) startHourInput.getSelectedItem(),
-                (int) (startMinInput.getSelectedItem().equals("00") ? 0 : startMinInput.getSelectedItem()));
+                (startMinInput.getSelectedItem().equals("00")) ? 0 : Integer.parseInt((String) startMinInput.getSelectedItem()));
         DateTimeHandler endDTH = getDateTimeHandlerFor(day, month, year,
                 (int) endHourInput.getSelectedItem(),
-                (int) (endMinInput.getSelectedItem().equals("00") ? 0 : endMinInput.getSelectedItem()));
+                (endMinInput.getSelectedItem().equals("00") ? 0 : Integer.parseInt((String) endMinInput.getSelectedItem())));
 
         // If the patient hasn't been set then error
         if (nhsNumberButton.getText().equals(defaultPatientDetailsButtonText)) {
