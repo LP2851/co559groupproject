@@ -1,5 +1,11 @@
 package ui;
 
+/**
+ * Class for Global variables.
+ * @author Lucas
+ * @version 0.1
+ */
+// @Deprecated
 public class GlobalUIVars {
     // Main Window Dimensions
     public static final int WINDOW_X = 720;

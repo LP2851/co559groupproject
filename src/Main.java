@@ -12,7 +12,7 @@ public class Main {
 
     /**
      * Runs when program starts.
-     * @param args
+     * @param args Arguments passed when run from the command line
      */
     public static void main(String[] args) {
         // Getting all necessary data from the database.

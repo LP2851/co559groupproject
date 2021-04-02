@@ -1,11 +1,17 @@
 package database;
 
+import database.data.AbstractPerson;
+import database.data.Booking;
+import database.data.Doctor;
+import database.data.Patient;
 import database.datetime.DateTimeHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,6 +92,26 @@ class AccessSQLiteTest {
                         "UNIQUE (startDateTime, endDateTime, patient) );"
         );
 
+        // Messages for Doctors Table
+        accessSQLite.runUpdateCommand(
+                "CREATE TABLE messagesdoctor (" +
+                        "mid INTEGER, " +
+                        "did INTEGER NOT NULL," +
+                        "message TEXT NOT NULL," +
+                        "FOREIGN KEY (did) REFERENCES doctor (did)," +
+                        "PRIMARY KEY (mid AUTOINCREMENT) );"
+        );
+
+        // Messages for Patients Table
+        accessSQLite.runUpdateCommand(
+                "CREATE TABLE messagespatient (" +
+                        "mid INTEGER, " +
+                        "pid INTEGER NOT NULL," +
+                        "message TEXT NOT NULL," +
+                        "FOREIGN KEY (pid) REFERENCES patient (pid)," +
+                        "PRIMARY KEY (mid AUTOINCREMENT) );"
+        );
+
         // Populating the Database
         // Adding an administrator record
         accessSQLite.runUpdateCommand(
@@ -132,7 +158,6 @@ class AccessSQLiteTest {
                 "INSERT INTO booking (startDateTime, endDateTime, doctor, patient)" +
                         "VALUES ('2021-01-01 07:00:00.000', '2021-01-01 08:00:00.000', 1, 1);"
         );
-
     }
 
     /**
@@ -220,23 +245,6 @@ class AccessSQLiteTest {
         DateTimeHandler end = new DateTimeHandler(2021, 1, 1, 9, 0);
         assertTrue(accessSQLite.addBooking(start, end, 1, 1));
     }
-    /*
-    @Test
-    void viewBookings() {
-    }
-
-    @Test
-    void updateBooking() {
-    }
-
-    @Test
-    void updatePatient() {
-    }
-
-    @Test
-    void removeBooking() {
-    }
-    */
 
     /**
      * When a user has multiple messages on the system they are all returned. The messages should be ordered with
@@ -296,6 +304,43 @@ class AccessSQLiteTest {
     }
 
     /**
+     * Sending a confirmation message to a patient.
+     */
+    @Test
+    void sendConfirmationMessage1() {
+        Patient p = new Patient(1, "", "", "", "", 0);
+        assertTrue(accessSQLite.sendConfirmationMessages(p, "This is a test"));
+        assertArrayEquals(new String[] {"This is a test"}, accessSQLite.getUserMessages(p));
+        assertTrue(accessSQLite.sendConfirmationMessages(p, "This is another test"));
+        assertArrayEquals(new String[] {"This is a test", "This is another test"}, accessSQLite.getUserMessages(p));
+    }
+
+    /**
+     * Sending a confirmation message to a doctor.
+     */
+    @Test
+    void sendConfirmationMessage2() {
+        Doctor d = new Doctor(1, "", "", "", "");
+        assertTrue(accessSQLite.sendConfirmationMessages(d, "This is a test"));
+        assertArrayEquals(new String[] {"This is a test"}, accessSQLite.getUserMessages(d));
+        assertTrue(accessSQLite.sendConfirmationMessages(d, "This is another test"));
+        assertArrayEquals(new String[] {"This is a test", "This is another test"}, accessSQLite.getUserMessages(d));
+    }
+
+    /**
+     * Sending a confirmation message to a doctor and patient when booking an appointment.
+     */
+    @Test
+    void sendConfirmationMessage3() {
+        Doctor d = new Doctor(1, "", "", "", "");
+        Patient p = new Patient(1, "", "", "", "", 0);
+        Booking b = new Booking(1, DateTimeHandler.getNow(), DateTimeHandler.getNow(), p, d);
+        assertTrue(accessSQLite.sendConfirmationMessages(b, "Message for doctor", "Message for patient"));
+        assertArrayEquals(new String[] {"Message for doctor"}, accessSQLite.getUserMessages(b.getDoctor()));
+        assertArrayEquals(new String[] {"Message for patient"}, accessSQLite.getUserMessages(b.getPatient()));
+    }
+
+    /**
      * After each test is completed, the test database is deleted.
      */
     @AfterEach
@@ -305,5 +350,4 @@ class AccessSQLiteTest {
         // Deletes file
         testingDB.delete();
     }
-
 }

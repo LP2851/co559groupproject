@@ -3,12 +3,12 @@ package database.data;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the Doctor class
  * @author Lucas
- * @version 0.2
+ * @version 0.3
  */
 class DoctorTest {
 
@@ -20,6 +20,8 @@ class DoctorTest {
      */
     @BeforeEach
     void setUp() {
+        Doctor.doctorIDMap.clear();
+        Doctor.doctorStringMap.clear();
         d1 = new Doctor(1, "Test", "Doc", "01234567890", "GP");
     }
 
@@ -62,5 +64,16 @@ class DoctorTest {
     @Test
     void testToString() {
         assertEquals("Test Doc (GP)", d1.toString());
+    }
+
+    /**
+     * Checks that the doctors added are the only things in the return from getAllDoctors()
+     * in the order they were added.
+     */
+    @Test
+    void getAllDoctors() {
+        assertArrayEquals(new Doctor[] {d1}, Doctor.getAllDoctors());
+        Doctor d2 = new Doctor(2, "Other", "Doc", "98765432100", "");
+        assertArrayEquals(new Doctor[] {d1, d2}, Doctor.getAllDoctors());
     }
 }
